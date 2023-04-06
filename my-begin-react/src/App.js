@@ -1,8 +1,18 @@
 import { useEffect, useState } from "react";
 
+function Hello() {
+  useEffect(() => {
+    console.log("create !");
+    return () => console.log("destroyed !"); // clean up 코드 :  리렌더링이 일어날 경우 return 실행,
+  }, []);
+  return <h1>Hello</h1>;
+}
+
 function App() {
   const [text, setText] = useState("");
   const [counter, setCounter] = useState(0); // useState : 변수를 제어하는 함수, 동적인 값 처리
+  const [sayHello, setSayHello] = useState(false);
+  const onShowing = () => setSayHello((p) => !p);
   const onClick = () => setCounter((e) => e + 1);
   console.log("rendering");
   useEffect(() => {
@@ -27,9 +37,14 @@ function App() {
       <input value={text} onChange={onChange} type="text" />
       <button onClick={onReset}>Reset</button>
       <h2>{text || "null Text"}</h2>
+      <hr />
       <h1>{counter}</h1>
-
       <button onClick={onClick}> Click me </button>
+      <hr />
+      <div>
+        {sayHello ? <Hello /> : null}
+        <button onClick={onShowing}>{sayHello ? "Hide" : "Show"}</button>
+      </div>
     </div>
   );
 }

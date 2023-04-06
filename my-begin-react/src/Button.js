@@ -5,6 +5,7 @@ function Button({ text }) {
 }
 
 Button.propTypes = {
+  // propTypes import 후 props의 타입을 지정할수 있음. isRequired : 필수값
   text: PropTypes.string.isRequired,
 };
 
