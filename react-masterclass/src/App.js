@@ -1,7 +1,19 @@
 import styled, { keyframes } from "styled-components";
 
+const Title = styled.h1`
+  color: ${(props) =>
+    props.theme
+      .textColor}; // index.js ThemeProvider가 상위 컴포넌트 object에 접근
+`;
+
 const Wrapper = styled.div`
+  margin: 0;
   display: flex;
+  height: 100vh;
+  width: 100vw;
+  justify-content: center;
+  align-items: center;
+  background-color: ${(props) => props.theme.backgroundColor};
 `;
 
 const rotation = keyframes`
@@ -43,9 +55,10 @@ const Box = styled.div`
 function App() {
   return (
     <Wrapper>
-      <Box>
+      {/* <Box>
         <Emoji as="p">🥰</Emoji>
-      </Box>
+      </Box> */}
+      <Title>hello</Title>
     </Wrapper>
   );
 }
