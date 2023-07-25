@@ -1,3 +1,4 @@
+import { useState } from "react";
 import styled from "styled-components";
 
 interface ContainerProps {
@@ -32,6 +33,10 @@ const sayHello = (p: PlayerShape) =>
 sayHello({ name: "sumin", age: 10 });
 
 function Circle({ bgColor, borderColor, text = "default text" }: CircleProps) {
+  // const [value, setValue] = useState<number | string>(0); // ts는 기본값으로 유추하여 형태를 인식, <number | string>와 같이 직접 지정가능
+  // setValue(2);
+  // setValue("hello");
+  // setValue(true); // error
   return (
     <Container bgColor={bgColor} borderColor={borderColor ?? bgColor}>
       {text}
