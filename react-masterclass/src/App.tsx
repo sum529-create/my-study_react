@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import styled from "styled-components";
 
 function App() {
   const [value, setValue] = useState("");
@@ -21,8 +22,15 @@ function App() {
     e.preventDefault(); // preventDefault - input, button 등 클릭 이벤트가 발생했을 경우 페이지가 reload되는 현상을 막아줌
     console.log("hello", value);
   };
+  const Container = styled.div`
+    background-color: ${(p) => p.theme.bgColor};
+  `;
+  const H1 = styled.h1`
+    color: ${(p) => p.theme.textColor};
+  `;
   return (
-    <div>
+    <Container>
+      <H1>login</H1>
       <form onSubmit={onSubmit}>
         <input
           type="text"
@@ -32,7 +40,7 @@ function App() {
         />
         <button>Log in</button>
       </form>
-    </div>
+    </Container>
   );
 }
 
