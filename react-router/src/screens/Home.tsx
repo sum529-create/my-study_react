@@ -1,7 +1,15 @@
-function Home() {
-  const users: any = [];
-  // error 발생
-  return <h1>{users[0].name} Home</h1>;
-}
+import { users } from "../db";
 
+function Home() {
+  return (
+    <div>
+      <h1>Users</h1>
+      <ul>
+        {users.map((e) => (
+          <li key={e.id}>{e.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 export default Home;
