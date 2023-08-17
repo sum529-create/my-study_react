@@ -8,6 +8,7 @@ function Home() {
         {users.map((e) => (
           <li key={e.id}>{e.name}</li>
         ))}
+        <li>commit test</li>
       </ul>
     </div>
   );
