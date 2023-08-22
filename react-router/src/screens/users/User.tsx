@@ -15,8 +15,9 @@ function User() {
         - '/'를 사용하게 되면 절대주소로 변환이 되어 -> ../followers로 바뀌게 되기 때문
        */}
       <Link to="followers">see followers</Link>
-      <Outlet />
+      <Outlet context={{ nameOfMyUser: users[Number(userId) - 1].name }} />
       {/* Outlet만 적어둘 경우 react-router-dom이 자동으로 인식(따로 표시할 필요없음) */}
+      {/* Outlet context-> 자식 컴포넌트에서 사용할 수 있도록 값을 전달함 */}
     </>
   );
 }
