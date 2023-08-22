@@ -4,6 +4,7 @@ import ErrorComponent from "./components/ErrorComponent";
 import About from "./screens/About";
 import Home from "./screens/Home";
 import NotFound from "./screens/NotFound";
+import Followers from "./screens/users/Followers";
 import User from "./screens/users/User";
 
 const router = createBrowserRouter([
@@ -26,6 +27,12 @@ const router = createBrowserRouter([
         // -> 사용자가 users만을 별도 주소로 사용하는 일이 없기때문
         // - 사용자가 users url을 입력하게 된다면 404 빈 페이지로 보냄
         element: <User />,
+        children: [
+          {
+            path: "followers",
+            element: <Followers />,
+          },
+        ],
       },
     ],
     errorElement: <NotFound />,
