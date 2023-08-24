@@ -1,46 +1,78 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { createGlobalStyle } from "styled-components";
+import Router from "./Router";
+
+const GlobalStyle = createGlobalStyle`
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap');
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, menu, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+main, menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, main, menu, nav, section {
+  display: block;
+}
+/* HTML5 hidden-attribute fix for newer browsers */
+*[hidden] {
+    display: none;
+}
+body {
+  line-height: 1;
+}
+menu, ol, ul {
+  list-style: none;
+}
+blockquote, q {
+  quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+*{
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  background-color: ${(p) => p.theme.bgColor};
+  color: ${(p) => p.theme.textColor};
+}
+a{
+  text-decoration: none;
+  color:inherit;
+}
+`;
 
 function App() {
-  const [value, setValue] = useState("");
-  const onChange = (e: React.FormEvent<HTMLInputElement>) => {
-    // e -> any타입으로 지정되어 ts에게 무슨 타입인지 설명해야함
-    const {
-      currentTarget: { value },
-    } = e;
-    setValue(value); // setValue(e.currentTarget.value)
-    // ** ES6 문법
-    // 다중 props를 가져와야할 경우 이 문법이 유용
-    // ex) value, tagName, width, id룰 가져와야 한다고 할 경우
-    // const value = e.currentTarget.value ... 로 하나하나 작성해야 하지만
-    // const {currentTarget:{value, tagName, width, id}} = e;
-    // 와 같이 사용할 수 있기 때문
-    // 만일 currentTarget이 없을 경우엔 const {x,y} = e 형태로 사용 가능함
-    // **
-  };
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // preventDefault - input, button 등 클릭 이벤트가 발생했을 경우 페이지가 reload되는 현상을 막아줌
-    console.log("hello", value);
-  };
-  const Container = styled.div`
-    background-color: ${(p) => p.theme.bgColor};
-  `;
-  const H1 = styled.h1`
-    color: ${(p) => p.theme.textColor};
-  `;
   return (
-    <Container>
-      <H1>login</H1>
-      <form onSubmit={onSubmit}>
-        <input
-          type="text"
-          placeholder="input text"
-          value={value}
-          onChange={onChange}
-        />
-        <button>Log in</button>
-      </form>
-    </Container>
+    <>
+      <GlobalStyle />
+      <Router />
+    </>
   );
 }
 
