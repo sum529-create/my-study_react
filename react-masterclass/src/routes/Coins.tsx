@@ -110,8 +110,8 @@ function Coins() {
     setLoading(false);
   };
   useEffect(() => {
-    setLoading(false); // server 내부 에러로 임시 처리
-    // getCoins(); // server 내부 에러로 임시로 testCoin값 사용
+    // setLoading(false); // server 내부 에러로 임시 처리
+    getCoins(); // server 내부 에러로 임시로 testCoin값 사용
   }, []);
   return (
     <Container>
@@ -122,7 +122,7 @@ function Coins() {
         {loading ? (
           <Loader>Loading...</Loader>
         ) : (
-          testCoins.map((e) => (
+          coins.map((e) => (
             <Coin key={e.id}>
               <Link to={`/${e.id}`} state={{ name: e.name }}>
                 <Img
