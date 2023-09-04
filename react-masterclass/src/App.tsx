@@ -1,7 +1,5 @@
-import React, { useState } from "react";
-import styled from "styled-components";
+import { Outlet } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
-import Router from "./Router";
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap');
@@ -57,9 +55,11 @@ table {
   box-sizing: border-box;
 }
 body {
+  font-weight: 300;
   font-family: 'Source Sans Pro', sans-serif;
   background-color: ${(p) => p.theme.bgColor};
   color: ${(p) => p.theme.textColor};
+  line-height: 1.2;
 }
 a{
   text-decoration: none;
@@ -71,7 +71,7 @@ function App() {
   return (
     <>
       <GlobalStyle />
-      <Router />
+      <Outlet/>
     </>
   );
 }
