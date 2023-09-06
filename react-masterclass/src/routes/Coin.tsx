@@ -1,6 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link, Outlet, useLocation, useParams } from "react-router-dom";
+import {
+  Link,
+  Outlet,
+  useLocation,
+  useMatch,
+  useParams,
+} from "react-router-dom";
 import styled from "styled-components";
 
 const Header = styled.header`
@@ -42,6 +48,28 @@ const OverviewItem = styled.div`
 `;
 const Description = styled.p`
   margin: 20px 0px;
+`;
+const Tabs = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin: 25px 0px;
+  gap: 10px;
+`;
+
+const Tab = styled.span<{ $isActive: boolean }>`
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 400;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 7px 0px;
+  border-radius: 10px;
+  color: ${(props) =>
+    props.$isActive === true ? props.theme.accentColor : props.theme.textColor};
+  // $isActive -> 스타일 컴포넌트에게 props로 전달되기를 희망 but HTML의 Attributes로 DOM을 조작하기를 희망하는 것으로 이해하여 이러한 에러 발생(Warming)
+  a {
+    display: block;
+  }
 `;
 interface RouteParams {
   coinId: string;
@@ -129,6 +157,8 @@ function Coin() {
   const state = location.state as RouteState; // react-router-dom v6부터 제네릭 지원 안함
   const [info, setInfo] = useState<IInfoData>();
   const [priceInfo, setPriceInfo] = useState<IPriceData>();
+  const priceMatch = useMatch("/:coinId/price");
+  const chartMatch = useMatch("/:coinId/chart");
   useEffect(() => {
     (async () => {
       const infoData = await axios(
@@ -147,47 +177,49 @@ function Coin() {
   return (
     <Container>
       <Header>
-        <Title>{state?.name ? state.name : loading ? "Loading" : info?.name}</Title>
+        <Title>
+          {state?.name ? state.name : loading ? "Loading" : info?.name}
+        </Title>
       </Header>
-      {loading ? <Loader>Loading...</Loader> : (
+      {loading ? (
+        <Loader>Loading...</Loader>
+      ) : (
         <>
-        <Overview>
-          <OverviewItem>
-            <span>Rank:</span>
-            <span>{info?.rank}</span>
-          </OverviewItem>
-          <OverviewItem>
-            <span>Symbol:</span>
-            <span>${info?.symbol}</span>
-          </OverviewItem>
-          <OverviewItem>
-            <span>Open Source:</span>
-            <span>{info?.open_source ? "Yes" : "No"}</span>
-          </OverviewItem>
-        </Overview>
-        <Description>{info?.description}</Description>
-        <Overview>
-          <OverviewItem>
-            <span>Total Suply:</span>
-            <span>{priceInfo?.total_supply}</span>
-          </OverviewItem>
-          <OverviewItem>
-            <span>Max Supply:</span>
-            <span>{priceInfo?.max_supply}</span>
-          </OverviewItem>
-        </Overview>
-        {/* <Switch>
-          <Route path={`/${coinId}/price`}>
-            <Price />
-          </Route>
-          <Route path={`/${coinId}/chart`}>
-            <Chart />
-          </Route>
-        </Switch> */}
-        <Link to="price">price</Link>
-        <Link to="chart">chart</Link>
-        <Outlet context={{coinId: coinId}}/>
-      </>
+          <Overview>
+            <OverviewItem>
+              <span>Rank:</span>
+              <span>{info?.rank}</span>
+            </OverviewItem>
+            <OverviewItem>
+              <span>Symbol:</span>
+              <span>${info?.symbol}</span>
+            </OverviewItem>
+            <OverviewItem>
+              <span>Open Source:</span>
+              <span>{info?.open_source ? "Yes" : "No"}</span>
+            </OverviewItem>
+          </Overview>
+          <Description>{info?.description}</Description>
+          <Overview>
+            <OverviewItem>
+              <span>Total Suply:</span>
+              <span>{priceInfo?.total_supply}</span>
+            </OverviewItem>
+            <OverviewItem>
+              <span>Max Supply:</span>
+              <span>{priceInfo?.max_supply}</span>
+            </OverviewItem>
+          </Overview>
+          <Tabs>
+            <Tab $isActive={chartMatch ? true : false}>
+              <Link to={`/${coinId}/chart`}>Chart</Link>
+            </Tab>
+            <Tab $isActive={priceMatch ? true : false}>
+              <Link to={`/${coinId}/price`}>Price</Link>
+            </Tab>
+          </Tabs>
+          <Outlet context={{ coinId: coinId }} />
+        </>
       )}
     </Container>
   );
