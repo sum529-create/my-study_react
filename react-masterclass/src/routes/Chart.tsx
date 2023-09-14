@@ -61,10 +61,21 @@ function Chart() {
               axisBorder: { show: false },
               axisTicks: { show: false },
               labels: { show: true },
+              //   type: "datetime",
               categories: data?.map((date) => {
                 const time = new Date(date.time_close * 1000);
                 return time.toLocaleDateString();
               }),
+            },
+            fill: {
+              type: "gradient",
+              gradient: { gradientToColors: ["#9c88ff"], stops: [0, 100] },
+            },
+            colors: ["#4cd137"],
+            tooltip: {
+              y: {
+                formatter: (v) => `$ ${v.toFixed(0)}`, // 소수점 0자리까지
+              },
             },
           }}
         />
