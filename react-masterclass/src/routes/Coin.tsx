@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import {
   Link,
   Outlet,
@@ -8,6 +9,7 @@ import {
   useParams,
 } from "react-router-dom";
 import styled from "styled-components";
+import { fetchCoinInfo, fetchCoinTickers } from "../api";
 
 const Header = styled.header`
   height: 10vh;
@@ -151,34 +153,54 @@ interface IPriceData {
 }
 
 function Coin() {
-  const [loading, setLoading] = useState(true);
   const { coinId } = useParams<keyof RouteParams>();
   const location = useLocation();
   const state = location.state as RouteState; // react-router-dom v6부터 제네릭 지원 안함
-  const [info, setInfo] = useState<IInfoData>();
-  const [priceInfo, setPriceInfo] = useState<IPriceData>();
   const priceMatch = useMatch("/:coinId/price");
   const chartMatch = useMatch("/:coinId/chart");
-  useEffect(() => {
-    (async () => {
-      const infoData = await axios(
-        `https://api.coinpaprika.com/v1/coins/${coinId}`
-      );
-      const priceData = await axios(
-        `https://api.coinpaprika.com/v1/tickers/${coinId}`
-      );
 
-      setInfo(infoData.data);
-      setPriceInfo(priceData.data);
-      setLoading(false);
-    })();
-  }, [coinId]);
+  // const [loading, setLoading] = useState(true);
+  // const [info, setInfo] = useState<IInfoData>();
+  // const [priceInfo, setPriceInfo] = useState<IPriceData>();
+  // useEffect(() => {
+  //   (async () => {
+  //     const infoData = await axios(
+  //       `https://api.coinpaprika.com/v1/coins/${coinId}`
+  //     );
+  //     const priceData = await axios(
+  //       `https://api.coinpaprika.com/v1/tickers/${coinId}`
+  //     );
+
+  //     setInfo(infoData.data);
+  //     setPriceInfo(priceData.data);
+  //     setLoading(false);
+  //   })();
+  // }, [coinId]);
+
+  // > 값을 구분하기 위한 key값으로 coinId를 중복하여 사용하여야 함 useQuery(coinId, ..)
+  //    -> React query가 query를 array로 보고 있어, array형식으로 변환 후 각각 하나의 고유한 id를 만들어 준다.
+  // > isLoading이 두 아이템 모두 사용하고 있어 직접 이름을 바꿔줘야 함 ) {isLoading: xxxx ...}
+  // > (coinId!)
+  //    -> react-router-dom v6버전 이후로 useParams를 사용하게 될 시
+  //       "string || undefined"형식으로 자동 설정되어, 이 형식은 'xx'형식의 매개변수에 할당 될수 없다는 에러 발생
+  //        ! (Non-null assertion operator)
+  //        => 확장 할당 어션셜로 값이 무조건 할당되어 있다고 컴파일러에게 전달하여 값이 없어도 변수를 사용할 수 있도록 하게 함
+  const { isLoading: infoLoading, data: infoData } = useQuery<IInfoData>(
+    ["info", coinId],
+    () => fetchCoinInfo(coinId!)
+  );
+  const { isLoading: tickersLoading, data: tickersData } = useQuery<IPriceData>(
+    ["tickers", coinId],
+    () => fetchCoinTickers(coinId!)
+  );
+
+  const loading = infoLoading || tickersLoading;
 
   return (
     <Container>
       <Header>
         <Title>
-          {state?.name ? state.name : loading ? "Loading" : info?.name}
+          {state?.name ? state.name : loading ? "Loading" : infoData?.name}
         </Title>
       </Header>
       {loading ? (
@@ -188,26 +210,26 @@ function Coin() {
           <Overview>
             <OverviewItem>
               <span>Rank:</span>
-              <span>{info?.rank}</span>
+              <span>{infoData?.rank}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Symbol:</span>
-              <span>${info?.symbol}</span>
+              <span>${infoData?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Open Source:</span>
-              <span>{info?.open_source ? "Yes" : "No"}</span>
+              <span>{infoData?.open_source ? "Yes" : "No"}</span>
             </OverviewItem>
           </Overview>
-          <Description>{info?.description}</Description>
+          <Description>{infoData?.description}</Description>
           <Overview>
             <OverviewItem>
               <span>Total Suply:</span>
-              <span>{priceInfo?.total_supply}</span>
+              <span>{tickersData?.total_supply}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Max Supply:</span>
-              <span>{priceInfo?.max_supply}</span>
+              <span>{tickersData?.max_supply}</span>
             </OverviewItem>
           </Overview>
           <Tabs>
