@@ -20,8 +20,12 @@ interface IHistory {
 
 function Chart() {
   const { coinId } = useOutletContext<ChartProps>();
-  const { isLoading, data } = useQuery<IHistory[]>(["ohlcv", coinId], () =>
-    fetchCoinHistory(coinId)
+  const { isLoading, data } = useQuery<IHistory[]>(
+    ["ohlcv", coinId],
+    () => fetchCoinHistory(coinId),
+    {
+      refetchInterval: 10000, // 10초 마다 refetch
+    }
   );
 
   return (
