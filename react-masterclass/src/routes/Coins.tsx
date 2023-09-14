@@ -88,7 +88,6 @@ function Coins() {
 
   // isLoading은 boolean값을 갖는다, 임의로 지정한 값은 x
   const { isLoading, data } = useQuery<ICoin[]>(["allCoins"], fetchCoins); // query key(식별자), fetcher 함수, (react v18에서 query key의 값은 대괄호[]로 묶어야함)
-  console.log(typeof data);
 
   return (
     <Container>
