@@ -24,7 +24,7 @@ function Chart() {
     ["ohlcv", coinId],
     () => fetchCoinHistory(coinId),
     {
-      refetchInterval: 10000, // 10초 마다 refetch
+      //   refetchInterval: 10000, // 10초 마다 refetch
     }
   );
 

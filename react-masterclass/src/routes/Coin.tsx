@@ -194,7 +194,7 @@ function Coin() {
     ["tickers", coinId],
     () => fetchCoinTickers(coinId!),
     {
-      refetchInterval: 5000, // 5초마다 refetch
+      // refetchInterval: 5000, // 5초마다 refetch
     }
   );
 
@@ -243,10 +243,26 @@ function Coin() {
           </Overview>
           <Tabs>
             <Tab $isActive={chartMatch ? true : false}>
-              <Link to={`/${coinId}/chart`}>Chart</Link>
+              <Link
+                to={
+                  location.pathname.includes("chart")
+                    ? `/${coinId}`
+                    : `/${coinId}/chart`
+                }
+              >
+                Chart
+              </Link>
             </Tab>
             <Tab $isActive={priceMatch ? true : false}>
-              <Link to={`/${coinId}/price`}>Price</Link>
+              <Link
+                to={
+                  location.pathname.includes("price")
+                    ? `/${coinId}`
+                    : `/${coinId}/price`
+                }
+              >
+                Price
+              </Link>
             </Tab>
           </Tabs>
           <Outlet context={{ coinId: coinId }} />
