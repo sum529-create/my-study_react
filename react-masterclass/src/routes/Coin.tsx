@@ -17,6 +17,11 @@ const Header = styled.header`
   display: flex;
   justify-content: center;
   align-items: center;
+  h1 {
+    text-align: center;
+    flex-grow: 1;
+    padding-right: -24px;
+  }
 `;
 const Container = styled.div`
   padding: 0px 20px;
@@ -208,6 +213,9 @@ function Coin() {
         </title>
       </Helmet>
       <Header>
+        <Link to={"/"}>
+          <span className="material-symbols-outlined">list</span>
+        </Link>
         <Title>
           {state?.name ? state.name : loading ? "Loading" : infoData?.name}
         </Title>
@@ -265,7 +273,7 @@ function Coin() {
               </Link>
             </Tab>
           </Tabs>
-          <Outlet context={{ coinId: coinId }} />
+          <Outlet context={{ coinId: coinId, USD: tickersData?.quotes.USD }} />
         </>
       )}
     </Container>
