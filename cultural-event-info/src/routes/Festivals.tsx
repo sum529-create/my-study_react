@@ -13,6 +13,7 @@ const Header = styled.div`
   height: auto;
   padding: 10rem 0 2.9rem 0;
   background-color: #2f3640;
+  background-image: url();
 `;
 
 const Title = styled.h1`
@@ -45,7 +46,14 @@ const SearchArea = styled.div`
   border: 1px solid #dcdde1;
 `;
 
-const Total = styled.div``;
+const Total = styled.div`
+  margin: 30px 0 16px 0;
+  border-bottom: 2px solid #333;
+  margin-bottom: 30px;
+  padding: 19px 0;
+  font-weight: 500;
+  color: #333;
+`;
 
 const CultureList = styled.div``;
 
