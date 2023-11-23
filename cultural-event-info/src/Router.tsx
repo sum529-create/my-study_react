@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
-import Festivals from "./routes/Festivals";
+import Festivals from "./routes/Culturals";
 
 const router = createBrowserRouter([
   {
