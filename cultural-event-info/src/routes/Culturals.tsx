@@ -1,5 +1,4 @@
 import { styled } from "styled-components";
-import { Helmet } from "react-helmet";
 import { useQuery } from "react-query";
 import { fetchCulturalInfo } from "../api";
 import { Link, useOutletContext } from "react-router-dom";
@@ -7,6 +6,7 @@ import ReactPaginate from "react-paginate";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Header from "../components/Header";
 
 const Container = styled.div`
   margin: 0 auto;
@@ -15,51 +15,6 @@ const Container = styled.div`
   position: relative;
   margin-bottom: 140px;
 `;
-const Background = styled.div`
-  background-color: rgba(0, 0, 0, 0.5);
-  width: 100%;
-  height: 295px;
-  position: absolute;
-  top: 0;
-`;
-const Header = styled.div`
-  text-align: center;
-  height: auto;
-  width: 100%;
-  padding: 10rem 0 2.9rem 0;
-  background-color: #2f3640;
-  background-image: url("/mainImg.jpeg");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  h1,
-  span {
-    position: relative;
-    z-index: 1000;
-  }
-  span {
-    font-style: italic;
-    font-weight: 600;
-  }
-`;
-
-const Title = styled.h1`
-  font-size: 3rem;
-  display: block;
-  line-height: 1;
-  font-weight: 600;
-  color: #f5f6fa;
-`;
-
-const SubTitle = styled.span`
-  font-size: 1.25rem;
-  color: #dcdde1;
-  padding-top: 20px;
-  letter-spacing: -0.03em;
-  line-height: 1;
-  display: block;
-`;
-
 const Section = styled.div`
   margin: 0 auto;
   padding: 1.25rem;
@@ -401,14 +356,7 @@ function Culturals() {
   };
   return (
     <Container>
-      <Helmet>
-        <title>서울 문화 정보</title>
-      </Helmet>
-      <Header>
-        <Background />
-        <Title>문화 행사 정보</Title>
-        <SubTitle>서울의 문화행사를 한눈에</SubTitle>
-      </Header>
+      <Header />
       <Section>
         <SearchArea>
           <DatePicker
@@ -462,7 +410,7 @@ function Culturals() {
                     <li key={i}>
                       <Link
                         to={`/${currentPage + String(i + 1).padStart(3, "0")}`}
-                        state={{ name: e.TITLE }}
+                        state={{ data: e }}
                       >
                         <div className="img_area">
                           <Img imgurl={e.MAIN_IMG} />
