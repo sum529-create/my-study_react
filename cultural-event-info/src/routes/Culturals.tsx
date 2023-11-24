@@ -5,6 +5,8 @@ import { fetchCulturalInfo } from "../api";
 import { Link, useOutletContext } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Container = styled.div`
   margin: 0 auto;
@@ -70,8 +72,13 @@ const SearchArea = styled.div`
   padding: 20px;
   justify-content: space-between;
   border: 1px solid #dcdde1;
-  .btn {
+  .btn,
+  .btn_reset {
     cursor: pointer;
+  }
+  .btn_reset {
+    background-color: #aaa;
+    border-color: #aaa;
   }
 `;
 
@@ -138,16 +145,21 @@ const CultureList = styled.div`
         color: #222;
         margin: 20px 0 25px;
       }
+      .img_area {
+        position: relative;
+        overflow: hidden;
+        border-radius: 10px;
+        transition: transform 0.3s ease;
+      }
+      &:hover {
+        border: 1px solid #3b3b3b;
+        background-color: #f7f7f7;
+        p {
+          text-decoration: underline;
+        }
+      }
     }
   }
-`;
-const NoData = styled.div`
-  text-align: center;
-  font-size: 18px;
-  font-weight: 500;
-  color: #aaa;
-  height: 200px;
-  padding: 115px 0;
 `;
 const Img = styled.div<{ imgurl?: string }>`
   overflow: hidden;
@@ -160,16 +172,21 @@ const Img = styled.div<{ imgurl?: string }>`
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  /* img {
-    position: absolute;
-    left: 0;
-    top: -20%;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    display: block;
-    margin: 0 auto;
-  } */
+  transition: transform 0.3s ease;
+  &:hover {
+    transform: scale(1.1);
+    -webkit-transform: scale(1.1);
+    -moz-transform: scale(1.1);
+    -o-transform: scale(1.1);
+  }
+`;
+const NoData = styled.div`
+  text-align: center;
+  font-size: 18px;
+  font-weight: 500;
+  color: #aaa;
+  height: 200px;
+  padding: 115px 0;
 `;
 const Date = styled.div`
   line-height: 1;
@@ -177,7 +194,7 @@ const Date = styled.div`
   position: absolute;
   bottom: 20px;
   right: 6%;
-  color: #a3a3a3;
+  font-weight: 500;
   span {
     font-size: 16px;
     position: absolute;
@@ -239,7 +256,13 @@ const Pagination = styled.div`
     padding-top: 7px;
   }
 `;
+function formateDate(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
 
+  return `${year}-${month}-${day}`;
+}
 function Culturals() {
   const { startIdx: initialStartIdx = 1, endIdx: initialEndIdx = 9 } =
     useOutletContext<RouteParams>() || {};
@@ -248,13 +271,19 @@ function Culturals() {
   const [currentPage, setCurrentPage] = useState(0);
   const [fetchData, setFetchData] = useState<ICulturalResponse | null>(null);
   const [selectCodeNm, setSelectCodeNm] = useState("");
-  const searchTitle = useRef<HTMLInputElement>(document.createElement("input"));
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  let searchTitle = useRef<HTMLInputElement>(document.createElement("input"));
   const { isLoading, data } = useQuery<ICulturalResponse>(
-    ["allCulturals", startIdx, endIdx, selectCodeNm, searchTitle.current.value],
+    ["allCulturals", startIdx, endIdx],
     async () => {
+      var culturalDate = " ";
+      if (selectedDate) {
+        culturalDate = formateDate(selectedDate);
+      }
       return fetchCulturalInfo(startIdx, endIdx, {
         codeNm: selectCodeNm ? selectCodeNm : " ",
         title: searchTitle.current.value ? searchTitle.current.value : " ",
+        date: selectedDate ? culturalDate : " ",
       });
     }
   );
@@ -287,9 +316,14 @@ function Culturals() {
     setEndIdx(newEndIdx);
     setCurrentPage(selected);
 
+    var culturalDate = " ";
+    if (selectedDate) {
+      culturalDate = formateDate(selectedDate);
+    }
     const newData = await fetchCulturalInfo(newStartIdx, newEndIdx, {
       codeNm: selectCodeNm ? selectCodeNm : " ",
       title: searchTitle.current.value ? searchTitle.current.value : " ",
+      date: selectedDate ? culturalDate : " ",
     });
 
     setFetchData(newData);
@@ -306,14 +340,36 @@ function Culturals() {
     const searchTit = searchTitle.current.value;
     setStartIdx(1);
     setEndIdx(9);
-
+    var culturalDate = " ";
+    if (selectedDate) {
+      culturalDate = formateDate(selectedDate);
+    }
     const newData = await fetchCulturalInfo(startIdx, endIdx, {
-      codeNm: selectCodeNm || selectCodeNm === "전체" ? " " : selectCodeNm,
+      codeNm: selectCodeNm
+        ? selectCodeNm === "전체"
+          ? " "
+          : selectCodeNm
+        : " ",
       title: searchTit ? searchTit : " ",
+      date: selectedDate ? culturalDate : " ",
     });
 
     setFetchData(newData);
     setCurrentPage(0);
+  };
+  const onClickSearchReset = async () => {
+    setSelectedDate(null);
+    setSelectCodeNm("전체");
+    searchTitle.current.value = "";
+    setStartIdx(1);
+    setEndIdx(9);
+    const newData = await fetchCulturalInfo(startIdx, endIdx, {
+      codeNm: " ",
+      title: " ",
+      date: " ",
+    });
+
+    setFetchData(newData);
   };
   const goToPreviousPage = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
@@ -340,7 +396,9 @@ function Culturals() {
       handlePageChange({ selected: currentPage + 10 });
     }
   };
-
+  const handleDateChange = (date: Date) => {
+    setSelectedDate(date);
+  };
   return (
     <Container>
       <Helmet>
@@ -353,7 +411,13 @@ function Culturals() {
       </Header>
       <Section>
         <SearchArea>
-          <input type="text" className="date" placeholder="YYYY-MM-DD" />
+          <DatePicker
+            className="date"
+            selected={selectedDate}
+            onChange={handleDateChange}
+            dateFormat="yyyy-MM-dd"
+            placeholderText="날짜를 선택하세요"
+          />
           <select
             value={selectCodeNm}
             onChange={handleSelectCodeNm}
@@ -374,6 +438,9 @@ function Culturals() {
           <button onClick={onClickSearch} className="btn">
             검색
           </button>
+          <button onClick={onClickSearchReset} className="btn_reset">
+            초기화
+          </button>
         </SearchArea>
         <Total>
           총{" "}
@@ -393,8 +460,13 @@ function Culturals() {
                 <ul>
                   {fetchData?.row.map((e, i) => (
                     <li key={i}>
-                      <Link to={`/${i}`} state={{ name: e.TITLE }}>
-                        <Img imgurl={e.MAIN_IMG} />
+                      <Link
+                        to={`/${currentPage + String(i + 1).padStart(3, "0")}`}
+                        state={{ name: e.TITLE }}
+                      >
+                        <div className="img_area">
+                          <Img imgurl={e.MAIN_IMG} />
+                        </div>
                         {/* <img src={e.MAIN_IMG} alt="mainImg" /> */}
                         <p>{e.TITLE}</p>
                         <Date>
