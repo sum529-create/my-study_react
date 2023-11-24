@@ -141,6 +141,14 @@ const CultureList = styled.div`
     }
   }
 `;
+const NoData = styled.div`
+  text-align: center;
+  font-size: 18px;
+  font-weight: 500;
+  color: #aaa;
+  height: 200px;
+  padding: 115px 0;
+`;
 const Img = styled.div<{ imgurl?: string }>`
   overflow: hidden;
   border-radius: 10px;
@@ -242,14 +250,15 @@ function Culturals() {
   const [selectCodeNm, setSelectCodeNm] = useState("");
   const searchTitle = useRef<HTMLInputElement>(document.createElement("input"));
   const { isLoading, data } = useQuery<ICulturalResponse>(
-    ["allCulturals", startIdx, endIdx],
+    ["allCulturals", startIdx, endIdx, selectCodeNm, searchTitle.current.value],
     async () => {
       return fetchCulturalInfo(startIdx, endIdx, {
-        codeNm: selectCodeNm,
-        title: searchTitle.current.value,
+        codeNm: selectCodeNm ? selectCodeNm : " ",
+        title: searchTitle.current.value ? searchTitle.current.value : " ",
       });
     }
   );
+
   let codeNames = [
     "전체",
     "클래식",
@@ -279,8 +288,8 @@ function Culturals() {
     setCurrentPage(selected);
 
     const newData = await fetchCulturalInfo(newStartIdx, newEndIdx, {
-      codeNm: selectCodeNm,
-      title: searchTitle.current.value,
+      codeNm: selectCodeNm ? selectCodeNm : " ",
+      title: searchTitle.current.value ? searchTitle.current.value : " ",
     });
 
     setFetchData(newData);
@@ -299,8 +308,8 @@ function Culturals() {
     setEndIdx(9);
 
     const newData = await fetchCulturalInfo(startIdx, endIdx, {
-      codeNm: selectCodeNm,
-      title: searchTit,
+      codeNm: selectCodeNm || selectCodeNm === "전체" ? " " : selectCodeNm,
+      title: searchTit ? searchTit : " ",
     });
 
     setFetchData(newData);
@@ -310,20 +319,26 @@ function Culturals() {
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     e.preventDefault();
-    setCurrentPage((prevPage) => Math.max(0, prevPage - 10));
-
-    handlePageChange({ selected: currentPage - 10 });
+    if (currentPage - 10 < 0) {
+      setCurrentPage(0);
+      handlePageChange({ selected: 0 });
+    } else {
+      setCurrentPage((prevPage) => Math.max(0, prevPage - 10));
+      handlePageChange({ selected: currentPage - 10 });
+    }
   };
   const goToNextPage = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault();
+    var maxPgNum = 0;
+    if (data) maxPgNum = Math.ceil((fetchData?.list_total_count ?? 0) / 9);
 
-    setCurrentPage((prePage) =>
-      Math.min(
-        Math.ceil(data?.list_total_count ? data.list_total_count / 9 : 0),
-        prePage + 10
-      )
-    );
-    handlePageChange({ selected: currentPage + 10 });
+    if (currentPage + 10 > maxPgNum) {
+      setCurrentPage(maxPgNum - 1);
+      handlePageChange({ selected: maxPgNum - 1 });
+    } else {
+      setCurrentPage((prePage) => Math.min(maxPgNum, prePage + 10));
+      handlePageChange({ selected: currentPage + 10 });
+    }
   };
 
   return (
@@ -361,53 +376,71 @@ function Culturals() {
           </button>
         </SearchArea>
         <Total>
-          총 <strong>{fetchData && fetchData.list_total_count}</strong>개
+          총{" "}
+          <strong>
+            {fetchData && fetchData.list_total_count > 0
+              ? fetchData.list_total_count
+              : 0}
+          </strong>
+          개
         </Total>
-        {isLoading ? (
-          "Loading..."
+        {fetchData && fetchData.list_total_count > 0 ? (
+          isLoading ? (
+            "Loading..."
+          ) : (
+            <>
+              <CultureList>
+                <ul>
+                  {fetchData?.row.map((e, i) => (
+                    <li key={i}>
+                      <Link to={`/${i}`} state={{ name: e.TITLE }}>
+                        <Img imgurl={e.MAIN_IMG} />
+                        {/* <img src={e.MAIN_IMG} alt="mainImg" /> */}
+                        <p>{e.TITLE}</p>
+                        <Date>
+                          <span className="material-symbols-outlined">
+                            schedule
+                          </span>
+                          {e.DATE}
+                        </Date>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </CultureList>
+              <Pagination>
+                <a
+                  href="javascript;"
+                  className="prePage"
+                  onClick={goToPreviousPage}
+                >
+                  &lt;&lt;
+                </a>
+                <ReactPaginate
+                  previousLabel={"<"}
+                  nextLabel={">"}
+                  breakLabel={"..."}
+                  pageCount={Math.ceil((fetchData?.list_total_count ?? 0) / 9)} // 전체 페이지 수
+                  marginPagesDisplayed={1}
+                  pageRangeDisplayed={9}
+                  onPageChange={handlePageChange}
+                  containerClassName={"pagination"}
+                  activeClassName={"active"}
+                  forcePage={currentPage}
+                />
+                <a
+                  href="javacript;"
+                  className="nextPage"
+                  onClick={goToNextPage}
+                >
+                  &gt;&gt;
+                </a>
+              </Pagination>
+            </>
+          )
         ) : (
-          <>
-            <CultureList>
-              <ul>
-                {fetchData?.row.map((e, i) => (
-                  <li key={i}>
-                    <Link to={`/${i}`} state={{ name: e.TITLE }}>
-                      <Img imgurl={e.MAIN_IMG} />
-                      {/* <img src={e.MAIN_IMG} alt="mainImg" /> */}
-                      <p>{e.TITLE}</p>
-                      <Date>
-                        <span className="material-symbols-outlined">
-                          schedule
-                        </span>
-                        {e.DATE}
-                      </Date>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </CultureList>
-          </>
+          <NoData>조회된 데이터가 없습니다.</NoData>
         )}
-        <Pagination>
-          <a href="javascript;" className="prePage" onClick={goToPreviousPage}>
-            &lt;&lt;
-          </a>
-          <ReactPaginate
-            previousLabel={"<"}
-            nextLabel={">"}
-            breakLabel={"..."}
-            pageCount={Math.ceil((fetchData?.list_total_count ?? 0) / 9)} // 전체 페이지 수
-            marginPagesDisplayed={1}
-            pageRangeDisplayed={9}
-            onPageChange={handlePageChange}
-            containerClassName={"pagination"}
-            activeClassName={"active"}
-            forcePage={currentPage}
-          />
-          <a href="javacript;" className="nextPage" onClick={goToNextPage}>
-            &gt;&gt;
-          </a>
-        </Pagination>
       </Section>
     </Container>
   );
