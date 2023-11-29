@@ -88,7 +88,7 @@ select {
   padding-right: 36px;
 }
 
-button {
+button, .button {
   display: inline-block;
   font-weight: 400;
   text-align: center;
@@ -98,7 +98,9 @@ button {
   padding: 0.375rem 0.75rem;
   line-height: 1.5;
   border-color: #353b48;
-  width:12%;
+  width:120px;
+  height: 40px;
+  min-width: 100px;
   border-radius: 3px;
 }
 `;

@@ -7,6 +7,7 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Header from "../components/Header";
+import { formateDate } from "../utils/helpers";
 
 const Container = styled.div`
   margin: 0 auto;
@@ -112,6 +113,12 @@ const CultureList = styled.div`
         p {
           text-decoration: underline;
         }
+        .cultural_img {
+          transform: scale(1.1);
+          -webkit-transform: scale(1.1);
+          -moz-transform: scale(1.1);
+          -o-transform: scale(1.1);
+        }
       }
     }
   }
@@ -128,12 +135,6 @@ const Img = styled.div<{ imgurl?: string }>`
   background-repeat: no-repeat;
   background-size: cover;
   transition: transform 0.3s ease;
-  &:hover {
-    transform: scale(1.1);
-    -webkit-transform: scale(1.1);
-    -moz-transform: scale(1.1);
-    -o-transform: scale(1.1);
-  }
 `;
 const NoData = styled.div`
   text-align: center;
@@ -211,13 +212,6 @@ const Pagination = styled.div`
     padding-top: 7px;
   }
 `;
-function formateDate(date: Date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-}
 function Culturals() {
   const { startIdx: initialStartIdx = 1, endIdx: initialEndIdx = 9 } =
     useOutletContext<RouteParams>() || {};
@@ -413,7 +407,7 @@ function Culturals() {
                         state={{ data: e }}
                       >
                         <div className="img_area">
-                          <Img imgurl={e.MAIN_IMG} />
+                          <Img imgurl={e.MAIN_IMG} className="cultural_img" />
                         </div>
                         {/* <img src={e.MAIN_IMG} alt="mainImg" /> */}
                         <p>{e.TITLE}</p>
