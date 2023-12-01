@@ -20,6 +20,9 @@ const MyHeader = styled.div`
     font-style: italic;
     font-weight: 600;
   }
+  @media (max-width: 768px) {
+    padding-bottom: 3.9rem;
+  }
 `;
 
 const Background = styled.div`
@@ -36,6 +39,9 @@ const Title = styled.h1`
   line-height: 1;
   font-weight: 600;
   color: #f5f6fa;
+  @media (max-width: 768px) {
+    font-size: 2.25rem;
+  }
 `;
 
 const SubTitle = styled.span`
@@ -45,6 +51,9 @@ const SubTitle = styled.span`
   letter-spacing: -0.03em;
   line-height: 1;
   display: block;
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 const Header = () => {

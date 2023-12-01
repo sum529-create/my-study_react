@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Await, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { styled } from "styled-components";
 import Header from "../components/Header";
 import { formateDate } from "../utils/helpers";
@@ -15,6 +15,13 @@ const Section = styled.div`
   margin: 0 auto;
   @media (max-width: 1400px) {
     margin: 0 1rem;
+  }
+  h1 {
+    font-size: 2.125rem;
+    word-break: keep-all;
+    font-weight: 700;
+    text-align: center;
+    padding: 20px 0 40px 0;
   }
   .ico_btn {
     border: 1px solid #ccc;
@@ -45,11 +52,11 @@ const InfoArea = styled.div`
   justify-content: space-between;
   width: 100%;
   margin-bottom: 60px;
-  padding: 80px 0 40px 0;
+  padding: 40px 0;
 `;
 const AboutArea = styled.div`
   display: block;
-  height: 1400px;
+  padding-bottom: 140px;
 `;
 const ImgBox = styled.div`
   flex-basis: 41%;
@@ -139,13 +146,13 @@ const TxtBox = styled.div`
       margin: 15px 0;
     }
   }
-  h1 {
+  /* h1 {
     font-size: 2.125rem;
     word-break: keep-all;
     font-weight: 700;
     text-align: center;
     padding: 20px 0 40px 0;
-  }
+  } */
   li {
     display: flex;
     align-items: center;
@@ -168,13 +175,16 @@ const TxtBox = styled.div`
       word-break: keep-all;
       letter-spacing: -0.05rem;
     }
+    &:last-child {
+      margin-top: 30px;
+    }
   }
   .caution {
     color: #cc3434;
     font-weight: 500;
   }
   .button {
-    margin-top: 50px;
+    margin-top: 30px;
     width: 33%;
     line-height: 2.5;
     height: 50px;
@@ -183,7 +193,7 @@ const TxtBox = styled.div`
 const Content = styled.div`
   overflow: hidden;
   margin-top: 5rem;
-  height: 12.5rem;
+  height: 10rem;
   padding-left: 1.2rem;
   h3 {
     margin-bottom: 2rem;
@@ -235,6 +245,7 @@ function Cultural() {
           <button onClick={goBack} className="ico_btn prePage">
             <i className="material-symbols-outlined">arrow_back_ios</i>
           </button>
+          <h1>{data.TITLE}</h1>
           <InfoArea>
             <ImgBox>
               <img src={`${data.MAIN_IMG}`} alt="culturalImg" />
@@ -273,7 +284,7 @@ function Cultural() {
                   </div>
                 </div>
               </div>
-              <h1>{data.TITLE}</h1>
+              {/* <h1>{data.TITLE}</h1> */}
               <ul>
                 <li>
                   <div className="type-th">주관기관</div>

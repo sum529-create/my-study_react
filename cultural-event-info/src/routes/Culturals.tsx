@@ -26,8 +26,29 @@ const SearchArea = styled.div`
   display: flex;
   background-color: #f5f6fa;
   padding: 20px;
-  justify-content: space-between;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
   border: 1px solid #dcdde1;
+  .react-datepicker-wrapper {
+    width: 20%;
+    min-width: 120px;
+    .date {
+      width: 100%;
+    }
+    @media (max-width: 768px) {
+      width: 100%;
+    }
+  }
+  select#codeName {
+    min-width: 100px;
+  }
+  @media (min-width: 768px) {
+    input[type="text"] {
+      flex: 1;
+    }
+  }
   .btn,
   .btn_reset {
     cursor: pointer;
@@ -35,6 +56,16 @@ const SearchArea = styled.div`
   .btn_reset {
     background-color: #aaa;
     border-color: #aaa;
+  }
+  @media (max-width: 768px) {
+    flex-direction: column;
+    * {
+      width: 100%;
+    }
+    .btn,
+    .btn_reset {
+      font-size: 16px;
+    }
   }
 `;
 
@@ -47,6 +78,9 @@ const Total = styled.div`
   color: #333;
   strong {
     color: #ac2f30;
+  }
+  @media (max-width: 768px) {
+    font-size: 18px;
   }
 `;
 interface ICulturalResponse {
@@ -95,10 +129,18 @@ const CultureList = styled.div`
       width: 30%;
       margin: 0 0 2.5% 3.33%;
       position: relative;
+      font-size: 18px;
+      font-weight: 500;
+      color: #222;
+      @media (max-width: 1025px) {
+        width: 45%;
+      }
+      @media (max-width: 768px) {
+        width: 100%;
+        font-size: 20px;
+        margin-left: 0;
+      }
       p {
-        font-size: 18px;
-        font-weight: 500;
-        color: #222;
         margin: 20px 0 25px;
       }
       .img_area {
@@ -135,6 +177,9 @@ const Img = styled.div<{ imgurl?: string }>`
   background-repeat: no-repeat;
   background-size: cover;
   transition: transform 0.3s ease;
+  @media (max-width: 768px) {
+    padding: 29%;
+  }
 `;
 const NoData = styled.div`
   text-align: center;
@@ -156,6 +201,9 @@ const Date = styled.div`
     position: absolute;
     left: -20px;
     top: -1px;
+  }
+  @media (max-width: 768px) {
+    font-size: 18px;
   }
 `;
 
@@ -210,6 +258,9 @@ const Pagination = styled.div`
   .prePage,
   .nextPage {
     padding-top: 7px;
+  }
+  @media (max-width: 768px) {
+    display: none;
   }
 `;
 function Culturals() {
@@ -285,6 +336,52 @@ function Culturals() {
       setFetchData(data);
     }
   }, [data]);
+  const isFetchingMoreData = useRef(false); // 추가 데이터 요청 중 여부
+
+  useEffect(() => {
+    function handleScroll() {
+      const { scrollY, innerHeight } = window;
+      const { offsetHeight } = document.body;
+
+      if (
+        window.innerWidth <= 768 &&
+        scrollY + innerHeight >= offsetHeight &&
+        !isFetchingMoreData.current // 추가 데이터 요청 중이 아닐 때만 실행
+      ) {
+        isFetchingMoreData.current = true; // 추가 데이터 요청 중으로 설정
+        var culturalDate = " ";
+        if (selectedDate) {
+          culturalDate = formateDate(selectedDate);
+        }
+        // API 요청
+        fetchCulturalInfo(startIdx, endIdx, {
+          codeNm: selectCodeNm ? selectCodeNm : " ",
+          title: searchTitle.current.value ? searchTitle.current.value : " ",
+          date: selectedDate ? culturalDate : " ",
+        })
+          .then((newData) => {
+            if (newData) {
+              setFetchData((prevData) => ({
+                ...prevData,
+                row: [...(prevData?.row || []), ...newData.row],
+                list_total_count: newData.list_total_count,
+              }));
+              setStartIdx((prevStartIdx) => prevStartIdx + 9);
+              setEndIdx((prevEndIdx) => prevEndIdx + 9);
+            }
+          })
+          .finally(() => {
+            isFetchingMoreData.current = false; // 추가 데이터 요청 종료
+          });
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [startIdx, endIdx, selectCodeNm, selectedDate]);
   const onClickSearch = async () => {
     const searchTit = searchTitle.current.value;
     setStartIdx(1);

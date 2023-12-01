@@ -79,9 +79,6 @@ input, select{
   box-shadow: none;
   box-sizing: border-box;
 }
-input.date {
-  width: 180px;
-}
 select {
   width: calc(20% - 32px / 3);
   max-width: none;
