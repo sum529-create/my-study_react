@@ -588,18 +588,11 @@ function Culturals() {
 
   useEffect(() => {
     const handleScroll = _.throttle(() => {
-      console.log("handleScroll 함수 작동중!!!");
-      console.log(isLoading);
-      console.log(isLoadingMoreData);
-      console.log(hasMoreData);
-
       if (isLoading || isLoadingMoreData || !hasMoreData) {
         return false;
       }
       const { scrollY, innerHeight } = window;
       const { scrollHeight } = document.documentElement;
-      console.log(scrollY + innerHeight);
-      console.log(scrollHeight);
 
       if (
         window.innerWidth <= 768 &&
@@ -615,10 +608,7 @@ function Culturals() {
             date: culturalDate || " ",
           })
             .then((newData) => {
-              console.log("0000");
-
               if (newData && newData.row.length > 0) {
-                console.log("1111");
                 // setStartIdx((prevStartIdx) => prevStartIdx + 9);
                 setEndIdx((prevEndIdx) => prevEndIdx + 9);
                 setHasMoreData(true);
@@ -627,7 +617,6 @@ function Culturals() {
               }
             })
             .finally(() => {
-              console.log("2222");
               setIsLoadingMoreData(false); // 추가 데이터 로딩 종료
               window.scrollTo({
                 top: scrollY - 100,
