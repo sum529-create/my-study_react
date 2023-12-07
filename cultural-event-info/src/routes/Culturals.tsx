@@ -8,6 +8,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Header from "../components/Header";
 import { formateDate } from "../utils/helpers";
+import _ from "lodash"; // lodash 라이브러리 import
 
 const Container = styled.div`
   margin: 0 auto;
@@ -582,68 +583,78 @@ function Culturals() {
   const handleSelectCodeNm = (e: ChangeEvent<HTMLSelectElement>) => {
     setSelectCodeNm(e.target.value);
   };
-  useEffect(() => {
-    if (data) {
-      setFetchData(data);
-    }
-  }, [data]);
   const [isLoadingMoreData, setIsLoadingMoreData] = useState(false); // 추가 데이터 로딩 중 여부
   const [hasMoreData, setHasMoreData] = useState(true); // 더 이상 데이터가 없는지 여부
 
   useEffect(() => {
-    function handleScroll() {
-      if (isLoading) {
-        return;
+    const handleScroll = _.throttle(() => {
+      console.log("handleScroll 함수 작동중!!!");
+      console.log(isLoading);
+      console.log(isLoadingMoreData);
+      console.log(hasMoreData);
+
+      if (isLoading || isLoadingMoreData || !hasMoreData) {
+        return false;
       }
       const { scrollY, innerHeight } = window;
-      const { offsetHeight } = document.body;
+      const { scrollHeight } = document.documentElement;
+      console.log(scrollY + innerHeight);
+      console.log(scrollHeight);
 
-      if (window.innerWidth <= 768 && scrollY + innerHeight >= offsetHeight) {
+      if (
+        window.innerWidth <= 768 &&
+        scrollY + innerHeight >= scrollHeight - 200
+      ) {
         setIsLoadingMoreData(true); // 추가 데이터 로딩 중으로 설정
-        setTimeout(() => {
-          var culturalDate = " ";
-          if (selectedDate) {
-            culturalDate = formateDate(selectedDate);
-          }
-          // API 요청
+        var culturalDate = selectedDate ? formateDate(selectedDate) : "";
+        // API 요청
+        if (hasMoreData) {
           fetchCulturalInfo(startIdx, endIdx, {
-            codeNm: selectCodeNm ? selectCodeNm : " ",
-            title: searchTitle.current.value ? searchTitle.current.value : " ",
-            date: selectedDate ? culturalDate : " ",
+            codeNm: selectCodeNm || " ",
+            title: searchTitle.current.value || " ",
+            date: culturalDate || " ",
           })
             .then((newData) => {
+              console.log("0000");
+
               if (newData && newData.row.length > 0) {
-                setFetchData((prevData) => ({
-                  ...prevData,
-                  row: [...(prevData?.row || []), ...newData.row],
-                  list_total_count: newData.list_total_count,
-                }));
-                setStartIdx((prevStartIdx) => prevStartIdx + 9);
+                console.log("1111");
+                // setStartIdx((prevStartIdx) => prevStartIdx + 9);
                 setEndIdx((prevEndIdx) => prevEndIdx + 9);
+                setHasMoreData(true);
               } else {
                 setHasMoreData(false); // 더 이상 데이터가 없음을 설정
               }
             })
             .finally(() => {
+              console.log("2222");
               setIsLoadingMoreData(false); // 추가 데이터 로딩 종료
+              window.scrollTo({
+                top: scrollY - 100,
+                behavior: "smooth",
+              });
             });
-        }, 500);
+        }
       }
-    }
+    }, 500);
 
+    if (data) {
+      setFetchData(data);
+    }
     window.addEventListener("scroll", handleScroll);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [
-    isLoading,
-    startIdx,
+    data,
     endIdx,
+    hasMoreData,
+    isLoading,
+    isLoadingMoreData,
     selectCodeNm,
     selectedDate,
-    isLoadingMoreData,
-    hasMoreData,
+    startIdx,
   ]);
   const onClickSearch = async () => {
     const searchTit = searchTitle.current.value;
