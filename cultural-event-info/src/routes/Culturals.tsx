@@ -395,12 +395,6 @@ const CultureList = styled.div`
       p {
         margin: 20px 0 25px;
       }
-      .img_area {
-        position: relative;
-        overflow: hidden;
-        border-radius: 10px;
-        transition: transform 0.3s ease;
-      }
       &:hover {
         border: 1px solid #3b3b3b;
         background-color: #f7f7f7;
@@ -412,25 +406,45 @@ const CultureList = styled.div`
           -webkit-transform: scale(1.1);
           -moz-transform: scale(1.1);
           -o-transform: scale(1.1);
+          transition: transform 0.3s ease;
         }
       }
     }
   }
 `;
-const Img = styled.div<{ imgurl?: string }>`
+const ImgArea = styled.div<{ imgurl?: string }>`
+  position: relative;
   overflow: hidden;
   border-radius: 10px;
-  position: relative;
-  padding: 49%;
-  height: 0;
-  border: 1px solid #bbb;
-  background-image: ${({ imgurl }) => `url(${imgurl})`};
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
   transition: transform 0.3s ease;
-  @media (max-width: 768px) {
-    padding: 29%;
+  .cultural_img {
+    overflow: hidden;
+    border-radius: 10px;
+    position: relative;
+    padding: 49%;
+    height: 0;
+    border: 1px solid #bbb;
+    background-image: ${({ imgurl }) => `url(${imgurl})`};
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    transition: transfoqrm 0.3s ease;
+    @media (max-width: 768px) {
+      padding: 29%;
+    }
+  }
+  .cultural_tag {
+    position: absolute;
+    z-index: 999;
+    width: 35%;
+    background-color: #e2e2e2;
+    right: 0;
+    font-size: 0.938rem;
+    height: 45px;
+    text-align: center;
+    line-height: 49px;
+    border-bottom-left-radius: 15px;
+    font-weight: 500;
   }
 `;
 const NoData = styled.div`
@@ -515,6 +529,29 @@ const Pagination = styled.div`
     display: none;
   }
 `;
+const TopArrowButton = styled.button<{ $isVisible: boolean }>`
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  position: fixed;
+  cursor: pointer;
+  bottom: 20%;
+  right: 0;
+  border-radius: 50%;
+  border: 2px solid #aaaaaa;
+  background-color: #fff;
+  color: #aaaaaa;
+  opacity: ${(props) => (props.$isVisible ? "1" : "0")};
+  transition: opacity 0.3s ease-in-out;
+  z-index: 999;
+  i {
+    font-size: 30px;
+    position: relative;
+    right: 8.8px;
+    bottom: 3px;
+    font-size: 30px;
+  }
+`;
 function Culturals() {
   const { startIdx: initialStartIdx = 1, endIdx: initialEndIdx = 9 } =
     useOutletContext<RouteParams>() || {};
@@ -524,6 +561,7 @@ function Culturals() {
   const [fetchData, setFetchData] = useState<ICulturalResponse | null>(null);
   const [selectCodeNm, setSelectCodeNm] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
   let searchTitle = useRef<HTMLInputElement>(document.createElement("input"));
   const { isLoading, data } = useQuery<ICulturalResponse>(
     ["allCulturals", startIdx, endIdx],
@@ -540,25 +578,25 @@ function Culturals() {
     }
   );
 
-  let codeNames = [
-    "전체",
-    "클래식",
-    "콘서트",
-    "축제-전통/역사",
-    "축제-자연/경관",
-    "축제-시민화합",
-    "축제-문화/예술",
-    "축제-기타",
-    "전시/미술",
-    "영화",
-    "연극",
-    "뮤지컬/오페라",
-    "무용",
-    "독주/독창회",
-    "기타",
-    "국악",
-    "교육/체험",
-  ];
+  let codeNames: { [key: string]: string } = {
+    전체: "",
+    클래식: "#0097e6",
+    콘서트: "#8c7ae6",
+    "축제-전통/역사": "#e1b12c",
+    "축제-자연/경관": "#44bd32",
+    "축제-시민화합": "#40739e",
+    "축제-문화/예술": "#e84118",
+    "축제-기타": "#7f8fa6",
+    "전시/미술": "#D6A2E8",
+    영화: "#FD7272",
+    연극: "#78e08f",
+    "뮤지컬/오페라": "#38ada9",
+    무용: "#82ccdd",
+    "독주/독창회": "#6a89cc",
+    기타: "#f8c291",
+    국악: "#b71540",
+    "교육/체험": "#fa983a",
+  };
 
   const handlePageChange = async ({ selected }: { selected: number }) => {
     const newStartIdx = selected * 9 + 1; // 처음 게시물의 인덱스를 구함
@@ -593,36 +631,41 @@ function Culturals() {
       }
       const { scrollY, innerHeight } = window;
       const { scrollHeight } = document.documentElement;
+      const showThreshold = 100;
 
-      if (
-        window.innerWidth <= 768 &&
-        scrollY + innerHeight >= scrollHeight - 200
-      ) {
-        setIsLoadingMoreData(true); // 추가 데이터 로딩 중으로 설정
-        var culturalDate = selectedDate ? formateDate(selectedDate) : "";
-        // API 요청
-        if (hasMoreData) {
-          fetchCulturalInfo(startIdx, endIdx, {
-            codeNm: selectCodeNm || " ",
-            title: searchTitle.current.value || " ",
-            date: culturalDate || " ",
-          })
-            .then((newData) => {
-              if (newData && newData.row.length > 0) {
-                // setStartIdx((prevStartIdx) => prevStartIdx + 9);
-                setEndIdx((prevEndIdx) => prevEndIdx + 9);
-                setHasMoreData(true);
-              } else {
-                setHasMoreData(false); // 더 이상 데이터가 없음을 설정
-              }
+      if (window.innerWidth <= 768) {
+        if (scrollY > showThreshold) {
+          setIsVisible(true);
+        } else {
+          setIsVisible(false);
+        }
+        if (scrollY + innerHeight >= scrollHeight - 200) {
+          setIsLoadingMoreData(true); // 추가 데이터 로딩 중으로 설정
+          var culturalDate = selectedDate ? formateDate(selectedDate) : "";
+          // API 요청
+          if (hasMoreData) {
+            fetchCulturalInfo(startIdx, endIdx, {
+              codeNm: selectCodeNm || " ",
+              title: searchTitle.current.value || " ",
+              date: culturalDate || " ",
             })
-            .finally(() => {
-              setIsLoadingMoreData(false); // 추가 데이터 로딩 종료
-              window.scrollTo({
-                top: scrollY - 100,
-                behavior: "smooth",
+              .then((newData) => {
+                if (newData && newData.row.length > 0) {
+                  // setStartIdx((prevStartIdx) => prevStartIdx + 9);
+                  setEndIdx((prevEndIdx) => prevEndIdx + 9);
+                  setHasMoreData(true);
+                } else {
+                  setHasMoreData(false); // 더 이상 데이터가 없음을 설정
+                }
+              })
+              .finally(() => {
+                setIsLoadingMoreData(false); // 추가 데이터 로딩 종료
+                window.scrollTo({
+                  top: scrollY - 100,
+                  behavior: "smooth",
+                });
               });
-            });
+          }
         }
       }
     }, 500);
@@ -657,7 +700,7 @@ function Culturals() {
       codeNm: selectCodeNm
         ? selectCodeNm === "전체"
           ? " "
-          : selectCodeNm
+          : encodeURIComponent(selectCodeNm)
         : " ",
       title: searchTit ? searchTit : " ",
       date: selectedDate ? culturalDate : " ",
@@ -708,6 +751,9 @@ function Culturals() {
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
   };
+  const moveTopBtn = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   return (
     <Container>
       <Header />
@@ -726,7 +772,7 @@ function Culturals() {
             id="codeName"
             title="구분선택"
           >
-            {codeNames.map((e, i) => (
+            {Object.keys(codeNames).map((e: string, i: number) => (
               <option key={i} value={e}>
                 {e}
               </option>
@@ -771,9 +817,15 @@ function Culturals() {
                         to={`/${currentPage + String(i + 1).padStart(3, "0")}`}
                         state={{ data: e }}
                       >
-                        <div className="img_area">
-                          <Img imgurl={e.MAIN_IMG} className="cultural_img" />
-                        </div>
+                        <ImgArea imgurl={e.MAIN_IMG}>
+                          <span
+                            className="cultural_tag"
+                            style={{ backgroundColor: codeNames[e.CODENAME] }}
+                          >
+                            {e.CODENAME}
+                          </span>
+                          <div className="cultural_img" />
+                        </ImgArea>
                         {/* <img src={e.MAIN_IMG} alt="mainImg" /> */}
                         <p>{e.TITLE}</p>
                         <Date>
@@ -821,6 +873,13 @@ function Culturals() {
           <NoData>조회된 데이터가 없습니다.</NoData>
         )}
       </Section>
+      <TopArrowButton
+        onClick={moveTopBtn}
+        $isVisible={isVisible}
+        style={{ display: isVisible ? "block" : "none" }}
+      >
+        <i className="material-symbols-outlined">keyboard_arrow_up</i>
+      </TopArrowButton>
     </Container>
   );
 }
