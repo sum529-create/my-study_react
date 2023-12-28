@@ -13,9 +13,6 @@ const Container = styled.div`
 const Section = styled.div`
   max-width: 1400px;
   margin: 0 auto;
-  @media (max-width: 1400px) {
-    margin: 0 1rem;
-  }
   h1 {
     font-size: 2.125rem;
     word-break: keep-all;
@@ -45,6 +42,28 @@ const Section = styled.div`
       left: 3px;
     }
   }
+  @media (max-width: 1400px) {
+    margin: 0 1rem;
+    h1 {
+      font-size: 1.5rem;
+      padding-left: 46px;
+      padding-right: 46px;
+    }
+  }
+  @media (max-width: 1024px) {
+    .ico_btn {
+      width: 36px;
+      height: 36px;
+      i {
+        top: -1px;
+        left: -1px;
+        font-size: 20px;
+      }
+    }
+    .prePage {
+      top: 53px;
+    }
+  }
 `;
 const InfoArea = styled.div`
   display: flex;
@@ -53,6 +72,9 @@ const InfoArea = styled.div`
   width: 100%;
   margin-bottom: 60px;
   padding: 40px 0;
+  @media (max-width: 1024px) {
+    padding: 0;
+  }
 `;
 const AboutArea = styled.div`
   display: block;
@@ -66,6 +88,9 @@ const ImgBox = styled.div`
     top: 0;
     left: 0;
     max-width: 100%;
+  }
+  @media (max-width: 1024px) {
+    flex-basis: 100% !important;
   }
 `;
 const TxtBox = styled.div`
@@ -189,6 +214,51 @@ const TxtBox = styled.div`
     line-height: 2.5;
     height: 50px;
   }
+  @media (max-width: 1024px) {
+    flex-basis: 100% !important;
+    margin-top: 30px;
+    .btnContainer {
+      .share {
+        right: 0;
+        i {
+          top: 1px;
+          left: -6px;
+          font-size: 20px;
+        }
+      }
+      .additionalBtns {
+        right: 146%;
+        height: 36px;
+        padding-right: 36px;
+        button {
+          height: 36px;
+          width: 40px;
+          img {
+            height: 35px;
+          }
+          &:not(:last-child)::after {
+            top: 8px;
+          }
+        }
+      }
+    }
+    li {
+      .type-th {
+        font-size: 16px;
+      }
+      .type-td,
+      .caution {
+        font-size: 14px;
+      }
+    }
+    .button {
+      font-size: 14px;
+      width: 100%;
+    }
+    p {
+      font-size: 18px;
+    }
+  }
 `;
 const Content = styled.div`
   overflow: hidden;
@@ -206,6 +276,14 @@ const Content = styled.div`
   }
   ul {
     margin-top: 2rem;
+  }
+  @media (max-width: 1024px) {
+    h3 {
+      font-size: 1.25rem;
+    }
+    p {
+      font-size: 1rem;
+    }
   }
 `;
 
