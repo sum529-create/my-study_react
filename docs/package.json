@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "predeploy": "npm run build",
-    "build": "npm run build-project1 && npm run build-project2 && npm run build-project3",
-    "build-project1": "cd react-masterclass && npm install && npm run build",
-    "build-project2": "cd movie-app && npm install && npm run build",
-    "build-project3": "cd cultural-event-info && npm install && npm run build",
+    "build": "npm run build-all",
+    "build-all": "npm run build-project1 && npm run build-project2 && npm run build-project3 && mkdir -p build && cp -r react-masterclass/build build/project1 && cp -r movie-app/build build/project2 && cp -r cultural-event-info/build build/project3",
+    "build-project1": "(cd react-masterclass && npm install && npm run build)",
+    "build-project2": "(cd movie-app && npm install && npm run build)",
+    "build-project3": "(cd cultural-event-info && npm install && npm run build)",
     "deploy": "gh-pages -d build"
   },
   "keywords": [],
