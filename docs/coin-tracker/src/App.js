@@ -7,7 +7,6 @@ function App() {
     fetch("https://api.coinpaprika.com/v1/tickers")
       .then((response) => response.json())
       .then((json) => {
-        console.log(json);
         setCoin(json);
         setLoading(false);
       });
@@ -21,7 +20,7 @@ function App() {
         <select>
           {coin.map((e) => (
             <option>
-              {e.name} ({e.symbol}): ${coin.quotes.USD.price} USD
+              {e.name} ({e.symbol}): ${e.quotes.USD.price} USD
             </option>
           ))}
         </select>
