@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/my-study_react/movie-app/static/css/main.73affb96.css",
+    "main.js": "/my-study_react/movie-app/static/js/main.b53b3590.js",
+    "static/js/787.7c42db31.chunk.js": "/my-study_react/movie-app/static/js/787.7c42db31.chunk.js",
+    "index.html": "/my-study_react/movie-app/index.html",
+    "main.73affb96.css.map": "/my-study_react/movie-app/static/css/main.73affb96.css.map",
+    "main.b53b3590.js.map": "/my-study_react/movie-app/static/js/main.b53b3590.js.map",
+    "787.7c42db31.chunk.js.map": "/my-study_react/movie-app/static/js/787.7c42db31.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.73affb96.css",
+    "static/js/main.b53b3590.js"
+  ]
+}
