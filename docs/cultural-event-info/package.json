@@ -1,6 +1,7 @@
 {
   "name": "cultural-event-info",
   "version": "0.1.0",
+  "homepage": "https://sum529-create.github.io/my-study_react/cultural-event-info/",
   "private": true,
   "dependencies": {
     "@tanstack/react-query": "^4.33.0",
