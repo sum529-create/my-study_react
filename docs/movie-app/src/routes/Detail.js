@@ -28,7 +28,7 @@ function Detail() {
         `http://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json?key=f5eef3421c602c6cb7ea224104795888&movieCd=${x.id}`
       )
     ).json();
-    setMovie(json.movieInfoResult.movieInfo);
+    if (json) setMovie(json.movieInfoResult.movieInfo);
   };
   useEffect(() => {
     getMovieList();
