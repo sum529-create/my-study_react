@@ -4,7 +4,7 @@ import styles from "./css/App.module.css";
 import Detail from "./routes/Detail";
 function App() {
   return (
-    <Router basename={process.env.PUBLIC_URL}>
+    <Router basename="/my-study_react/movie-app">
       <Routes>
         <Route className={styles.body} path="/movie/:id" element={<Detail />} />{" "}
         {/* ':' movie 하단 route값으로 원하는 값 추가가능 */}
