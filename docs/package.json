@@ -1,15 +1,16 @@
 {
   "name": "docs",
   "version": "1.0.0",
+  "homepage": "https://sum529-create.github.io/my-study_react",
   "description": "",
   "main": "index.js",
   "scripts": {
     "predeploy": "npm run build",
     "build": "npm run build-all",
-    "build-all": "npm run build-project1 && npm run build-project2 && npm run build-project3 && mkdir -p build && cp -r react-masterclass/build build/project1 && cp -r movie-app/build build/project2 && cp -r cultural-event-info/build build/project3",
-    "build-project1": "(cd react-masterclass && npm install && npm run build)",
-    "build-project2": "(cd movie-app && npm install && npm run build)",
-    "build-project3": "(cd cultural-event-info && npm install && npm run build)",
+    "build-all": "npm run build-coin-compare && npm run build-movie-app && npm run build-cultural-event-info && mkdir -p build && cp -r react-masterclass/build build/coin-compare && cp -r movie-app/build build/movie-app && cp -r cultural-event-info/build build/cultural-event-info",
+    "build-coin-compare": "(cd react-masterclass && npm install && npm run build)",
+    "build-movie-app": "(cd movie-app && npm install && npm run build)",
+    "build-cultural-event-info": "(cd cultural-event-info && npm install && npm run build)",
     "deploy": "gh-pages -d build"
   },
   "keywords": [],

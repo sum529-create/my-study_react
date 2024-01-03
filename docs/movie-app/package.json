@@ -1,5 +1,6 @@
 {
   "name": "movie-app",
+  "homepage": "https://sum529-create.github.io/my-study_react/movie-app/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
