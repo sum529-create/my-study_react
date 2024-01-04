@@ -7,7 +7,7 @@ const MyHeader = styled.div`
   width: 100%;
   padding: 10rem 0 2.9rem 0;
   background-color: #2f3640;
-  background-image: url("/mainImg.jpeg");
+  background-image: url("/my-study_react/cultural-event-info/mainImg.jpeg");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;

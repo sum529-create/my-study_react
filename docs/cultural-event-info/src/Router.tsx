@@ -1,23 +1,15 @@
-import { createBrowserRouter } from "react-router-dom";
+import { Routes, Route } from "react-router";
 import App from "./App";
 import Cultural from "./routes/Cultural";
 import Festivals from "./routes/Culturals";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <App />,
-    children: [
-      {
-        path: "",
-        element: <Festivals />,
-      },
-      {
-        path: "/:culturalIdx",
-        element: <Cultural />,
-      },
-    ],
-  },
-]);
+const Router = () => (
+  <Routes>
+    <Route path="/my-study_react/cultural-event-info/" element={<App />}>
+      <Route index element={<Festivals />} />
+      <Route path=":culturalIdx" element={<Cultural />} />
+    </Route>
+  </Routes>
+);
 
-export default router;
+export default Router;

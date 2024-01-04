@@ -814,7 +814,9 @@ function Culturals() {
                   {fetchData?.row.map((e, i) => (
                     <li key={i}>
                       <Link
-                        to={`/${currentPage + String(i + 1).padStart(3, "0")}`}
+                        to={`/my-study_react/cultural-event-info/${currentPage}${String(
+                          i + 1
+                        ).padStart(3, "0")}`}
                         state={{ data: e }}
                       >
                         <ImgArea imgurl={e.MAIN_IMG}>
