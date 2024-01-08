@@ -8,12 +8,12 @@ app.use(express.json());
 
 // 프록시 설정
 app.use(
-  "/api",
+  "/my-study_react/cultural-event-info",
   createProxyMiddleware({
     target: "http://openapi.seoul.go.kr:8088", // 실제 API 엔드포인트
     changeOrigin: true,
     pathRewrite: {
-      "^/api": "", // API 경로 변경
+      "^/my-study_react/cultural-event-info": "", // API 경로 변경
     },
   })
 );
