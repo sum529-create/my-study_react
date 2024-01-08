@@ -1,26 +1,21 @@
 const express = require("express");
+const { createProxyMiddleware } = require("http-proxy-middleware");
+
 const app = express();
 const axios = require("axios");
 
 app.use(express.json());
 
-app.get(
-  "/api/4d48766c7573756d31303757415a7157/json/culturalEventInfo/:startIdx/:endIdx/:codeNm?/:title?/:date?",
-  async (req, res) => {
-    try {
-      const { startIdx, endIdx, codeNm, title, date } = req.params;
-      let url = `http://openapi.seoul.go.kr:8088/4d48766c7573756d31303757415a7157/json/culturalEventInfo/${startIdx}/${endIdx}/`;
-
-      if (codeNm) url += `${codeNm}/`;
-      if (title) url += `${title}/`;
-      if (date) url += `${date}/`;
-
-      const response = await axios.get(url);
-      res.json(response.data.culturalEventInfo);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  }
+// 프록시 설정
+app.use(
+  "/api/4d48766c7573756d31303757415a7157",
+  createProxyMiddleware({
+    target: "http://openapi.seoul.go.kr:8088", // 실제 API 엔드포인트
+    changeOrigin: true,
+    pathRewrite: {
+      "^/api/4d48766c7573756d31303757415a7157": "", // API 경로 변경
+    },
+  })
 );
 
 const PORT = process.env.PORT || 3002;
