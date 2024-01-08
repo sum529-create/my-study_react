@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "/api/4d48766c7573756d31303757415a7157";
+const BASE_URL = "/api";
 
 export const fetchCulturalInfo = async (
   startIdx: number,
@@ -12,7 +12,7 @@ export const fetchCulturalInfo = async (
   } = {}
 ) => {
   const { codeNm, title, date } = options;
-  let url = `${BASE_URL}/json/culturalEventInfo/${startIdx}/${endIdx}/`;
+  let url = `${BASE_URL}/4d48766c7573756d31303757415a7157/json/culturalEventInfo/${startIdx}/${endIdx}/`;
 
   if (codeNm) url += `${codeNm}/`;
   if (title) url += `${title}/`;
