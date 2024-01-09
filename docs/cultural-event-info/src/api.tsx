@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "/my-study_react/cultural-event-info";
+const BASE_URL = "/api";
 
 export const fetchCulturalInfo = async (
   startIdx: number,
