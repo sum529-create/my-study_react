@@ -3,8 +3,10 @@ const { createProxyMiddleware } = require("http-proxy-middleware");
 
 const app = express();
 const axios = require("axios");
+const cors = require("cors");
 
 app.use(express.json());
+app.use(cors());
 
 // 프록시 설정
 app.use(
