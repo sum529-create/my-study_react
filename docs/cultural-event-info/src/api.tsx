@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const BASE_URL = "/api";
+// const BASE_URL = "/api";
+const BASE_URL = "https://crossorigin.me/http://openapi.seoul.go.kr:8088";
 
 export const fetchCulturalInfo = async (
   startIdx: number,
