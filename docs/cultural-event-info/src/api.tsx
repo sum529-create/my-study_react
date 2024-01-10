@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const BASE_URL = "/api";
+const BASE_URL = "https://sum529-create.github.io/api"; // Express 서버의 주소로 수정
+// const BASE_URL = "/api";
 // const BASE_URL = "https://crossorigin.me/http://openapi.seoul.go.kr:8088";
 
 export const fetchCulturalInfo = async (
