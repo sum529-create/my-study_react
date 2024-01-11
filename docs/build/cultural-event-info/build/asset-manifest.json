@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/my-study_react/cultural-event-info/static/css/main.011167ea.css",
+    "main.js": "/my-study_react/cultural-event-info/static/js/main.3543fe00.js",
+    "index.html": "/my-study_react/cultural-event-info/index.html",
+    "main.011167ea.css.map": "/my-study_react/cultural-event-info/static/css/main.011167ea.css.map",
+    "main.3543fe00.js.map": "/my-study_react/cultural-event-info/static/js/main.3543fe00.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.011167ea.css",
+    "static/js/main.3543fe00.js"
+  ]
+}
