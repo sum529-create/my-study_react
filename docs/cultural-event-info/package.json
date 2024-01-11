@@ -53,6 +53,7 @@
     ]
   },
   "devDependencies": {
+    "@types/aria-query": "^5.0.4",
     "@types/lodash": "^4.14.202",
     "@types/react-datepicker": "^4.19.3",
     "@types/react-helmet": "^6.1.8",
