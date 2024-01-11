@@ -7,11 +7,14 @@ app.use(express.json());
 
 app.get("/api/cultural-event-info/:startIdx/:endIdx", async (req, res) => {
   const { startIdx, endIdx } = req.params;
-
+  const { codeNm, title, date } = req.query;
+  console.log("api 실행중!");
   try {
-    const response = await axios.get(
-      `http://openapi.seoul.go.kr:8088/4d48766c7573756d31303757415a7157/json/culturalEventInfo/${startIdx}/${endIdx}/`
-    );
+    let url = `http://openapi.seoul.go.kr:8088/4d48766c7573756d31303757415a7157/json/culturalEventInfo/${startIdx}/${endIdx}/`;
+    if (codeNm) url += `${codeNm}/`;
+    if (title) url += `${title}/`;
+    if (date) url += `${date}/`;
+    const response = await axios.get(url);
     res.json(response.data);
   } catch (error) {
     res.status(500).json({ error: error.message });

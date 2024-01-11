@@ -15,11 +15,19 @@ export const fetchCulturalInfo = async (
   } = {}
 ) => {
   const { codeNm, title, date } = options;
-  let url = `${BASE_URL}/4d48766c7573756d31303757415a7157/json/culturalEventInfo/${startIdx}/${endIdx}/`;
+  let url = `${BASE_URL}/api/cultural-event-info/${startIdx}/${endIdx}/`;
 
-  if (codeNm) url += `${codeNm}/`;
-  if (title) url += `${title}/`;
-  if (date) url += `${date}/`;
+  // if (codeNm) url += `${codeNm}/`;
+  // if (title) url += `${title}/`;
+  // if (date) url += `${date}/`;
+  const queryParams = new URLSearchParams();
+  if (codeNm) queryParams.append("codeNm", codeNm);
+  if (title) queryParams.append("title", title);
+  if (date) queryParams.append("date", date);
+
+  if (queryParams.toString()) {
+    url += `?${queryParams.toString()}`;
+  }
 
   try {
     const response = await axios.get(url);
