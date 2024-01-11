@@ -17,17 +17,17 @@ export const fetchCulturalInfo = async (
   const { codeNm, title, date } = options;
   let url = `${BASE_URL}/api/cultural-event-info/${startIdx}/${endIdx}/`;
 
-  // if (codeNm) url += `${codeNm}/`;
-  // if (title) url += `${title}/`;
-  // if (date) url += `${date}/`;
-  const queryParams = new URLSearchParams();
-  if (codeNm) queryParams.append("codeNm", codeNm);
-  if (title) queryParams.append("title", title);
-  if (date) queryParams.append("date", date);
+  if (codeNm) url += `${codeNm}/`;
+  if (title) url += `${title}/`;
+  if (date) url += `${date}/`;
+  // const queryParams = new URLSearchParams();
+  // if (codeNm) queryParams.append("codeNm", codeNm);
+  // if (title) queryParams.append("title", title);
+  // if (date) queryParams.append("date", date);
 
-  if (queryParams.toString()) {
-    url += `?${queryParams.toString()}`;
-  }
+  // if (queryParams.toString()) {
+  //   url += `?${queryParams.toString()}`;
+  // }
 
   try {
     const response = await axios.get(url);
