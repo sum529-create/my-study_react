@@ -3,7 +3,20 @@ const axios = require("axios");
 
 const app = express();
 const cors = require("cors");
-app.use(cors());
+// 서버 응답 헤더에 CORS 설정 추가
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://sum529-create.github.io");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
+app.use(cors({ origin: "https://sum529-create.github.io" }));
 
 app.use(express.json());
 
