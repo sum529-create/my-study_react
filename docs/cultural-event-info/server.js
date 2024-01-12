@@ -20,7 +20,6 @@ app.get(
   "/api/cultural-event-info/:startIdx/:endIdx/:codeNm?/:title?/:date?",
   async (req, res) => {
     const { startIdx, endIdx, codeNm, title, date } = req.params;
-    console.log("api 실행중!");
     try {
       let url = `http://openapi.seoul.go.kr:8088/4d48766c7573756d31303757415a7157/json/culturalEventInfo/${startIdx}/${endIdx}/`;
       if (codeNm) url += `${codeNm}/`;

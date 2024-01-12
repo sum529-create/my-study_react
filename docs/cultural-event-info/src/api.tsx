@@ -1,7 +1,6 @@
 import axios from "axios";
 
-const BASE_URL =
-  "https://mysterious-anchorage-19320-3fde62ac4840.herokuapp.com";
+const BASE_URL = "https://cultural-event-info-00018db00a6d.herokuapp.com/";
 // const BASE_URL = "https://sum529-create.github.io/api"; // Express 서버의 주소로 수정
 // const BASE_URL = "/api";
 // const BASE_URL = "https://crossorigin.me/http://openapi.seoul.go.kr:8088";
