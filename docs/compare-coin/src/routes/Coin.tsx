@@ -254,8 +254,8 @@ function Coin() {
               <Link
                 to={
                   location.pathname.includes("chart")
-                    ? `my-study_react/compare-coin/${coinId}`
-                    : `my-study_react/compare-coin/${coinId}/chart`
+                    ? `/my-study_react/compare-coin/${coinId}`
+                    : `/my-study_react/compare-coin/${coinId}/chart`
                 }
               >
                 Chart
@@ -265,8 +265,8 @@ function Coin() {
               <Link
                 to={
                   location.pathname.includes("price")
-                    ? `my-study_react/compare-coin/${coinId}`
-                    : `my-study_react/compare-coin/${coinId}/price`
+                    ? `/my-study_react/compare-coin/${coinId}`
+                    : `/my-study_react/compare-coin/${coinId}/price`
                 }
               >
                 Price

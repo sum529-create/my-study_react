@@ -105,7 +105,7 @@ function Coins() {
           {data?.map((e) => (
             <Coin key={e.id}>
               <Link
-                to={`my-study_react/compare-coin/${e.id}`}
+                to={`/my-study_react/compare-coin/${e.id}`}
                 state={{ name: e.name }}
               >
                 <Img
