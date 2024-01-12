@@ -30,7 +30,7 @@ export const fetchCulturalInfo = async (
   // }
 
   try {
-    const response = await axios.get(url, { withCredentials: true });
+    const response = await axios.get(url);
     return response.data.culturalEventInfo;
   } catch (error: any) {
     console.error("Error fetching data:", error);
