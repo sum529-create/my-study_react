@@ -213,7 +213,7 @@ function Coin() {
         </title>
       </Helmet>
       <Header>
-        <Link to={"/"}>
+        <Link to={"/my-study_react/compare-coin"}>
           <span className="material-symbols-outlined">list</span>
         </Link>
         <Title>
