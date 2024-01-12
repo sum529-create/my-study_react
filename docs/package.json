@@ -7,8 +7,8 @@
   "scripts": {
     "predeploy": "npm run build",
     "build": "npm run build-all",
-    "build-all": "npm run build-coin-compare && npm run build-movie-app && npm run build-cultural-event-info && mkdir -p build && cp -r react-masterclass/build build/coin-compare && cp -r movie-app/build build/movie-app && cp -r cultural-event-info/build build/cultural-event-info",
-    "build-coin-compare": "(cd react-masterclass && npm install && npm run build)",
+    "build-all": "npm run build-compare-coin && npm run build-movie-app && npm run build-cultural-event-info && mkdir -p build && cp -r compare-coin/build build/compare-coin && cp -r movie-app/build build/movie-app && cp -r cultural-event-info/build build/cultural-event-info",
+    "build-compare-coin": "(cd compare-coin && npm install && npm run build)",
     "build-movie-app": "(cd movie-app && npm install && npm run build)",
     "build-cultural-event-info": "(cd cultural-event-info && npm install && npm run build)",
     "deploy": "gh-pages -d build"
