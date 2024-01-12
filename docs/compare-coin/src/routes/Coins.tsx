@@ -104,7 +104,10 @@ function Coins() {
         <CoinList>
           {data?.map((e) => (
             <Coin key={e.id}>
-              <Link to={`/${e.id}`} state={{ name: e.name }}>
+              <Link
+                to={`my-study_react/compare-coin/${e.id}`}
+                state={{ name: e.name }}
+              >
                 <Img
                   src={`https://cryptocurrencyliveprices.com/img/${e.id}.png`}
                 />
