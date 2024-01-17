@@ -337,9 +337,9 @@ const Loading = styled.div`
 `;
 interface ICulturalResponse {
   list_total_count: number;
-  row: IFestival[];
+  row: ICultural[];
 }
-interface IFestival {
+interface ICultural {
   CODENAME: string;
   GUNAME: string;
   TITLE: string;
@@ -575,6 +575,9 @@ function Culturals() {
         title: searchTitle.current.value ? searchTitle.current.value : " ",
         date: selectedDate ? culturalDate : " ",
       });
+    },
+    {
+      enabled: startIdx === 1, // enabled -> 값이 존재할때만 쿼리 요청 (자동실행 방지)
     }
   );
 
