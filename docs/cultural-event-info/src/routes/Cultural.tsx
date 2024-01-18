@@ -1,6 +1,7 @@
-import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import { styled } from "styled-components";
+import { fetchCulturalInfo } from "../api";
 import Header from "../components/Header";
 import { formateDate } from "../utils/helpers";
 
@@ -286,10 +287,322 @@ const Content = styled.div`
     }
   }
 `;
+const Loading = styled.div`
+  @keyframes rotate-loading {
+    0% {
+      transform: rotate(0deg);
+      -ms-transform: rotate(0deg);
+      -webkit-transform: rotate(0deg);
+      -o-transform: rotate(0deg);
+      -moz-transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+      -ms-transform: rotate(360deg);
+      -webkit-transform: rotate(360deg);
+      -o-transform: rotate(360deg);
+      -moz-transform: rotate(360deg);
+    }
+  }
 
+  @-moz-keyframes rotate-loading {
+    0% {
+      transform: rotate(0deg);
+      -ms-transform: rotate(0deg);
+      -webkit-transform: rotate(0deg);
+      -o-transform: rotate(0deg);
+      -moz-transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+      -ms-transform: rotate(360deg);
+      -webkit-transform: rotate(360deg);
+      -o-transform: rotate(360deg);
+      -moz-transform: rotate(360deg);
+    }
+  }
+
+  @-webkit-keyframes rotate-loading {
+    0% {
+      transform: rotate(0deg);
+      -ms-transform: rotate(0deg);
+      -webkit-transform: rotate(0deg);
+      -o-transform: rotate(0deg);
+      -moz-transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+      -ms-transform: rotate(360deg);
+      -webkit-transform: rotate(360deg);
+      -o-transform: rotate(360deg);
+      -moz-transform: rotate(360deg);
+    }
+  }
+
+  @-o-keyframes rotate-loading {
+    0% {
+      transform: rotate(0deg);
+      -ms-transform: rotate(0deg);
+      -webkit-transform: rotate(0deg);
+      -o-transform: rotate(0deg);
+      -moz-transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+      -ms-transform: rotate(360deg);
+      -webkit-transform: rotate(360deg);
+      -o-transform: rotate(360deg);
+      -moz-transform: rotate(360deg);
+    }
+  }
+
+  @keyframes rotate-loading {
+    0% {
+      transform: rotate(0deg);
+      -ms-transform: rotate(0deg);
+      -webkit-transform: rotate(0deg);
+      -o-transform: rotate(0deg);
+      -moz-transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+      -ms-transform: rotate(360deg);
+      -webkit-transform: rotate(360deg);
+      -o-transform: rotate(360deg);
+      -moz-transform: rotate(360deg);
+    }
+  }
+
+  @-moz-keyframes rotate-loading {
+    0% {
+      transform: rotate(0deg);
+      -ms-transform: rotate(0deg);
+      -webkit-transform: rotate(0deg);
+      -o-transform: rotate(0deg);
+      -moz-transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+      -ms-transform: rotate(360deg);
+      -webkit-transform: rotate(360deg);
+      -o-transform: rotate(360deg);
+      -moz-transform: rotate(360deg);
+    }
+  }
+
+  @-webkit-keyframes rotate-loading {
+    0% {
+      transform: rotate(0deg);
+      -ms-transform: rotate(0deg);
+      -webkit-transform: rotate(0deg);
+      -o-transform: rotate(0deg);
+      -moz-transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+      -ms-transform: rotate(360deg);
+      -webkit-transform: rotate(360deg);
+      -o-transform: rotate(360deg);
+      -moz-transform: rotate(360deg);
+    }
+  }
+
+  @-o-keyframes rotate-loading {
+    0% {
+      transform: rotate(0deg);
+      -ms-transform: rotate(0deg);
+      -webkit-transform: rotate(0deg);
+      -o-transform: rotate(0deg);
+      -moz-transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+      -ms-transform: rotate(360deg);
+      -webkit-transform: rotate(360deg);
+      -o-transform: rotate(360deg);
+      -moz-transform: rotate(360deg);
+    }
+  }
+
+  @keyframes loading-text-opacity {
+    0% {
+      opacity: 0;
+    }
+    20% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @-moz-keyframes loading-text-opacity {
+    0% {
+      opacity: 0;
+    }
+    20% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @-webkit-keyframes loading-text-opacity {
+    0% {
+      opacity: 0;
+    }
+    20% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @-o-keyframes loading-text-opacity {
+    0% {
+      opacity: 0;
+    }
+    20% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  .loading-container,
+  .loading {
+    height: 100px;
+    position: relative;
+    width: 100px;
+    border-radius: 100%;
+  }
+
+  .loading-container {
+    margin: 50% auto;
+  }
+
+  .loading {
+    border: 2px solid transparent;
+    border-color: transparent #000 transparent #000;
+    -moz-animation: rotate-loading 1.5s linear 0s infinite normal;
+    -moz-transform-origin: 50% 50%;
+    -o-animation: rotate-loading 1.5s linear 0s infinite normal;
+    -o-transform-origin: 50% 50%;
+    -webkit-animation: rotate-loading 1.5s linear 0s infinite normal;
+    -webkit-transform-origin: 50% 50%;
+    animation: rotate-loading 1.5s linear 0s infinite normal;
+    transform-origin: 50% 50%;
+  }
+
+  .loading-container:hover .loading {
+    border-color: transparent #e45635 transparent #e45635;
+  }
+  .loading-container:hover .loading,
+  .loading-container .loading {
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -ms-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+  }
+
+  #loading-text {
+    -moz-animation: loading-text-opacity 2s linear 0s infinite normal;
+    -o-animation: loading-text-opacity 2s linear 0s infinite normal;
+    -webkit-animation: loading-text-opacity 2s linear 0s infinite normal;
+    animation: loading-text-opacity 2s linear 0s infinite normal;
+    color: #000;
+    font-family: "Helvetica Neue", "Helvetica", "arial";
+    font-size: 10px;
+    font-weight: bold;
+    margin-top: 45px;
+    opacity: 0;
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    top: 0;
+    width: 100px;
+  }
+`;
+interface ICultural {
+  CODENAME: string;
+  GUNAME: string;
+  TITLE: string;
+  DATE: string;
+  PLACE: string;
+  ORG_NAME: string;
+  USE_TRGT: string;
+  USE_FEE: string;
+  PLAYER: string;
+  PROGRAM: string;
+  ETC_DESC: string;
+  ORG_LINK: string;
+  MAIN_IMG: string;
+  RGSTDATE: string;
+  TICKET: string;
+  STRTDATE: Date;
+  END_DATE: Date;
+  THEMECODE: string;
+  LOT: string;
+  LAT: string;
+  IS_FREE: string;
+  HMPG_ADDR: string;
+}
 function Cultural() {
   const location = useLocation();
-  const data = location.state?.data;
+  const { culturalIdx } = useParams();
+  const culIdx = Number(culturalIdx);
+  const data = location.state?.data || null;
+  const [subData, setSubData] = useState<ICultural>(data);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await fetchCulturalInfo(culIdx, culIdx, {
+          codeNm: " ",
+          title: " ",
+          date: " ",
+        });
+        // console.log("Fetch successful:", result);
+
+        if (result && result.RESULT && result.RESULT.CODE === "INFO-000") {
+          const rowData = result.row;
+
+          if (rowData && rowData.length > 0) {
+            setSubData(rowData[0]);
+            setLoading(true);
+            // console.log("Data set successfully:", rowData[0]);
+          } else {
+            console.error("No data found in the result:", result);
+          }
+        } else {
+          console.error("Unexpected result structure:", result);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    if (culturalIdx && !data) {
+      // console.log("Fetching data...");
+      fetchData();
+    }
+  }, []);
+  const [loading, setLoading] = useState(false);
   const [showBtns, setShowBtns] = useState(false);
   const goBack = () => {
     window.history.back();
@@ -315,119 +628,192 @@ function Cultural() {
       alert("URL 복사 실패");
     }
   };
+  const facebookShare = () => {
+    const location = window.location.href;
+    window.open("http://www.facebook.com/sharer.php?u=" + location);
+  };
   return (
     <>
       <Container>
         <Header />
-        <Section>
-          <button onClick={goBack} className="ico_btn prePage">
-            <i className="material-symbols-outlined">arrow_back_ios</i>
-          </button>
-          <h1>{data.TITLE}</h1>
-          <InfoArea>
-            <ImgBox>
-              <img src={`${data.MAIN_IMG}`} alt="culturalImg" />
-            </ImgBox>
-            <TxtBox>
-              <div className="event_top">
-                <p>{data.CODENAME}</p>
-                <div className="btnContainer">
-                  <button
-                    onClick={handleButtonClick}
-                    onMouseEnter={handleBtnHover}
-                    onMouseLeave={handleBtnLeave}
-                    className="ico_btn share"
-                  >
-                    <i className="material-symbols-outlined">share</i>
-                  </button>
-                  <div id="buttonGroup" className="additionalBtns">
-                    <button onClick={isPreparing}>
-                      <img
-                        src={require("../assets/icons/sns_face.png")}
-                        alt="facebook"
-                      />
+        {!loading ? (
+          <Loading>
+            <div className="loading-container">
+              <div className="loading"></div>
+              <div id="loading-text">loading</div>
+            </div>
+          </Loading>
+        ) : (
+          <Section>
+            <button onClick={goBack} className="ico_btn prePage">
+              <i className="material-symbols-outlined">arrow_back_ios</i>
+            </button>
+            <h1>{data ? data.TITLE : subData ? subData.TITLE : ""}</h1>
+            <InfoArea>
+              <ImgBox>
+                <img
+                  src={`${
+                    data ? data.MAIN_IMG : subData ? subData.MAIN_IMG : ""
+                  }`}
+                  alt="culturalImg"
+                />
+              </ImgBox>
+              <TxtBox>
+                <div className="event_top">
+                  <p>
+                    {data ? data.CODENAME : subData ? subData.CODENAME : ""}
+                  </p>
+                  <div className="btnContainer">
+                    <button
+                      onClick={handleButtonClick}
+                      onMouseEnter={handleBtnHover}
+                      onMouseLeave={handleBtnLeave}
+                      className="ico_btn share"
+                    >
+                      <i className="material-symbols-outlined">share</i>
                     </button>
-                    <button onClick={isPreparing}>
-                      <img
-                        src={require("../assets/icons/sns_kakao.png")}
-                        alt="kakao"
-                      />
-                    </button>
-                    <button onClick={copyUrl}>
-                      <img
-                        src={require("../assets/icons/sns_copy.png")}
-                        alt="url"
-                      />
-                    </button>
+                    <div id="buttonGroup" className="additionalBtns">
+                      <button onClick={facebookShare}>
+                        <img
+                          src={require("../assets/icons/sns_face.png")}
+                          alt="facebook"
+                        />
+                      </button>
+                      <button onClick={isPreparing}>
+                        <img
+                          src={require("../assets/icons/sns_kakao.png")}
+                          alt="kakao"
+                        />
+                      </button>
+                      <button onClick={copyUrl}>
+                        <img
+                          src={require("../assets/icons/sns_copy.png")}
+                          alt="url"
+                        />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-              {/* <h1>{data.TITLE}</h1> */}
-              <ul>
-                <li>
-                  <div className="type-th">주관기관</div>
-                  <div className="type-td">
-                    {data.GUNAME + " / " + data.ORG_NAME}
-                  </div>
-                </li>
-                <li>
-                  <div className="type-th">축제기간</div>
-                  <div className="type-td">{data.DATE}</div>
-                </li>
-                <li>
-                  <div className="type-th">장소</div>
-                  <div className="type-td">{data.PLACE}</div>
-                </li>
-                <li>
-                  <div className="type-th">신청기간</div>
-                  <div className="type-td">{data.RGSTDATE}</div>
-                </li>
-                <li>
-                  <div className="type-th">이용대상</div>
-                  <div className="type-td">{data.USE_TRGT}</div>
-                </li>
-                <li>
-                  <div className="type-th">이용가격</div>
-                  <div className="type-td">{data.USE_FEE || "-"}</div>
-                </li>
-                <li>
-                  <span className="caution">
-                    ※ 축제 진행 현황에 따라 상세 내용은 달라질 수 있습니다.
-                  </span>
-                </li>
-              </ul>
-              <a className="button" href={data.ORG_LINK} target="blank">
-                홈페이지 바로가기
-              </a>
-            </TxtBox>
-          </InfoArea>
-          <AboutArea>
-            <Content>
-              <h3>출연자</h3>
-              <div>{data.PLAYER || "-"}</div>
-            </Content>
-            <Content>
-              <h3>공연시간 정보</h3>
-              <p>예매가능시간: {data.RGSTDATE}</p>
-              <ul>
-                <li>
-                  시작일: {data.STRTDATE ? formateDate(data.STRTDATE) : "-"}
-                </li>
-                <li>
-                  종료일: {data.END_DATE ? formateDate(data.END_DATE) : "-"}
-                </li>
-              </ul>
-            </Content>
-            <Content>
-              <h3>공연정보</h3>
-              <p>{data.PROGRAM ? data.PROGRAM : "-"}</p>
-            </Content>
-            <Content>
-              <h3>기타</h3>
-              <p>{data.ETC_DESC ? data.ETC_DESC : "-"}</p>
-            </Content>
-          </AboutArea>
-        </Section>
+                {/* <h1>{data.TITLE}</h1> */}
+                <ul>
+                  <li>
+                    <div className="type-th">주관기관</div>
+                    <div className="type-td">
+                      {(data ? data.GUNAME : subData ? subData.GUNAME : "") +
+                        " / " +
+                        (data
+                          ? data.ORG_NAME
+                          : subData
+                          ? subData.ORG_NAME
+                          : "")}
+                    </div>
+                  </li>
+                  <li>
+                    <div className="type-th">축제기간</div>
+                    <div className="type-td">
+                      {data ? data.DATE : subData ? subData.DATE : ""}
+                    </div>
+                  </li>
+                  <li>
+                    <div className="type-th">장소</div>
+                    <div className="type-td">
+                      {data ? data.PLACE : subData ? subData.PLACE : ""}
+                    </div>
+                  </li>
+                  <li>
+                    <div className="type-th">신청기간</div>
+                    <div className="type-td">
+                      {data ? data.RGSTDATE : subData ? subData.RGSTDATE : ""}
+                    </div>
+                  </li>
+                  <li>
+                    <div className="type-th">이용대상</div>
+                    <div className="type-td">
+                      {data ? data.USE_TRGT : subData ? subData.USE_TRGT : ""}
+                    </div>
+                  </li>
+                  <li>
+                    <div className="type-th">이용가격</div>
+                    <div className="type-td">
+                      {data ? data.USE_FEE : subData ? subData.USE_FEE : "무료"}
+                    </div>
+                  </li>
+                  <li>
+                    <span className="caution">
+                      ※ 축제 진행 현황에 따라 상세 내용은 달라질 수 있습니다.
+                    </span>
+                  </li>
+                </ul>
+                <a
+                  className="button"
+                  href={
+                    data?.ORG_LINK
+                      ? data.ORG_LINK
+                      : subData
+                      ? subData.ORG_LINK
+                      : ":javascript;"
+                  }
+                  target="blank"
+                >
+                  홈페이지 바로가기
+                </a>
+              </TxtBox>
+            </InfoArea>
+            <AboutArea>
+              <Content>
+                <h3>출연자</h3>
+                <div>
+                  {data?.PLAYER ? data.PLAYER : subData ? subData.PLAYER : "-"}
+                </div>
+              </Content>
+              <Content>
+                <h3>공연시간 정보</h3>
+                <p>
+                  예매가능시간:{" "}
+                  {data ? data.RGSTDATE : subData ? subData.RGSTDATE : ""}
+                </p>
+                <ul>
+                  <li>
+                    시작일:{" "}
+                    {data?.STRTDATE
+                      ? formateDate(data.STRTDATE)
+                      : subData?.STRTDATE
+                      ? formateDate(subData.STRTDATE)
+                      : "-"}
+                  </li>
+                  <li>
+                    종료일:{" "}
+                    {data?.END_DATE
+                      ? formateDate(data.END_DATE)
+                      : subData?.END_DATE
+                      ? formateDate(subData.END_DATE)
+                      : "-"}
+                  </li>
+                </ul>
+              </Content>
+              <Content>
+                <h3>공연정보</h3>
+                <p>
+                  {data
+                    ? data.PROGRAM
+                    : subData?.PROGRAM
+                    ? subData.PROGRAM
+                    : "-"}
+                </p>
+              </Content>
+              <Content>
+                <h3>기타</h3>
+                <p>
+                  {data
+                    ? data.ETC_DESC
+                    : subData?.ETC_DESC
+                    ? subData.ETC_DESC
+                    : "-"}
+                </p>
+              </Content>
+            </AboutArea>
+          </Section>
+        )}
       </Container>
     </>
   );

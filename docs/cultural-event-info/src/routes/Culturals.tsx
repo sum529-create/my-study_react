@@ -355,8 +355,8 @@ interface ICultural {
   MAIN_IMG: string;
   RGSTDATE: string;
   TICKET: string;
-  STRTDATE: string;
-  END_DATE: string;
+  STRTDATE: Date;
+  END_DATE: Date;
   THEMECODE: string;
   LOT: string;
   LAT: string;
