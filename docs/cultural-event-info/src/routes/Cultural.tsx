@@ -605,7 +605,13 @@ function Cultural() {
   const [loading, setLoading] = useState(false);
   const [showBtns, setShowBtns] = useState(false);
   const goBack = () => {
-    window.history.back();
+    if (window.location.host === "sum529-create.github.io")
+      window.location.href =
+        "https://sum529-create.github.io/my-study_react/cultural-event-info/";
+    else {
+      window.location.href =
+        window.location.origin + "/my-study_react/cultural-event-info/";
+    }
   };
   const handleButtonClick = () => {
     setShowBtns(!showBtns);
