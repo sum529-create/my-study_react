@@ -15,13 +15,11 @@ app.get(
   async (req, res) => {
     const { startIdx, endIdx, codeNm, title, date } = req.params;
     try {
-      console.log("Hi!?");
       let url = `http://openapi.seoul.go.kr:8088/4d48766c7573756d31303757415a7157/json/culturalEventInfo/${startIdx}/${endIdx}/`;
       if (codeNm) url += `${codeNm}/`;
       if (title) url += `${title}/`;
       if (date) url += `${date}/`;
       const response = await axios.get(url);
-      console.log(response);
 
       // CORS 헤더 추가
       res.header("Access-Control-Allow-Origin", "*");
@@ -32,7 +30,6 @@ app.get(
 
       res.json(response.data);
     } catch (error) {
-      console.log("errpr");
       res.status(500).json({ error: error.message });
     }
   }

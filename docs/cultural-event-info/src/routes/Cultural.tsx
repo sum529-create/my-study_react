@@ -600,6 +600,8 @@ function Cultural() {
     if (culturalIdx && !data) {
       // console.log("Fetching data...");
       fetchData();
+    } else if (data) {
+      setLoading(true);
     }
   }, []);
   const [loading, setLoading] = useState(false);
@@ -741,7 +743,11 @@ function Cultural() {
                   <li>
                     <div className="type-th">이용가격</div>
                     <div className="type-td">
-                      {data ? data.USE_FEE : subData ? subData.USE_FEE : "무료"}
+                      {data && data.USE_FEE !== ""
+                        ? data.USE_FEE
+                        : subData && subData.USE_FEE !== ""
+                        ? subData.USE_FEE
+                        : "무료"}
                     </div>
                   </li>
                   <li>
@@ -769,7 +775,11 @@ function Cultural() {
               <Content>
                 <h3>출연자</h3>
                 <div>
-                  {data?.PLAYER ? data.PLAYER : subData ? subData.PLAYER : "-"}
+                  {data && data.PLAYER !== ""
+                    ? data.PLAYER
+                    : subData && subData.PLAYER !== ""
+                    ? subData.PLAYER
+                    : "출연자 정보가 없습니다."}
                 </div>
               </Content>
               <Content>
@@ -804,7 +814,7 @@ function Cultural() {
                     ? data.PROGRAM
                     : subData?.PROGRAM
                     ? subData.PROGRAM
-                    : "-"}
+                    : "공연정보가 없습니다."}
                 </p>
               </Content>
               <Content>
