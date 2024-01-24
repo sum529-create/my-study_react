@@ -23,7 +23,6 @@ const proxyOptions = {
   },
 };
 
-// '/proxy/api/cultural-event-info'로 시작하는 모든 요청을 프록시
 app.use("/proxy/api/cultural-event-info", createProxyMiddleware(proxyOptions));
 
 const PORT = process.env.PORT || 8080;

@@ -9,6 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import Header from "../components/Header";
 import { formateDate } from "../utils/helpers";
 import _ from "lodash"; // lodash 라이브러리 import
+import { ICulturalResponse } from "../cultural";
 
 const Container = styled.div`
   margin: 0 auto;
@@ -335,34 +336,6 @@ const Loading = styled.div`
     width: 100px;
   }
 `;
-interface ICulturalResponse {
-  list_total_count: number;
-  row: ICultural[];
-}
-interface ICultural {
-  CODENAME: string;
-  GUNAME: string;
-  TITLE: string;
-  DATE: string;
-  PLACE: string;
-  ORG_NAME: string;
-  USE_TRGT: string;
-  USE_FEE: string;
-  PLAYER: string;
-  PROGRAM: string;
-  ETC_DESC: string;
-  ORG_LINK: string;
-  MAIN_IMG: string;
-  RGSTDATE: string;
-  TICKET: string;
-  STRTDATE: Date;
-  END_DATE: Date;
-  THEMECODE: string;
-  LOT: string;
-  LAT: string;
-  IS_FREE: string;
-  HMPG_ADDR: string;
-}
 
 interface RouteParams {
   startIdx: number;

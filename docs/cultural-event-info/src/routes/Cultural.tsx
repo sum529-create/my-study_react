@@ -4,6 +4,7 @@ import { styled } from "styled-components";
 import { fetchCulturalInfo } from "../api";
 import Header from "../components/Header";
 import { formateDate } from "../utils/helpers";
+import { ICultural } from "../cultural";
 
 const Container = styled.div`
   position: relative;
@@ -138,9 +139,9 @@ const TxtBox = styled.div`
         height: 46px;
         padding: 0;
         cursor: pointer;
-        &:not(:last-child) {
+        /* &:not(:last-child) {
           opacity: 0.5;
-        }
+        } */
         &:not(:last-child)::after {
           content: "|";
           display: inline-block;
@@ -538,38 +539,29 @@ const Loading = styled.div`
     width: 100px;
   }
 `;
-interface ICultural {
-  CODENAME: string;
-  GUNAME: string;
-  TITLE: string;
-  DATE: string;
-  PLACE: string;
-  ORG_NAME: string;
-  USE_TRGT: string;
-  USE_FEE: string;
-  PLAYER: string;
-  PROGRAM: string;
-  ETC_DESC: string;
-  ORG_LINK: string;
-  MAIN_IMG: string;
-  RGSTDATE: string;
-  TICKET: string;
-  STRTDATE: Date;
-  END_DATE: Date;
-  THEMECODE: string;
-  LOT: string;
-  LAT: string;
-  IS_FREE: string;
-  HMPG_ADDR: string;
-}
 function Cultural() {
   const location = useLocation();
   const { culturalIdx } = useParams();
   const culIdx = Number(culturalIdx);
   const data = location.state?.data || null;
   const [subData, setSubData] = useState<ICultural>(data);
-
+  const { Kakao } = window;
   useEffect(() => {
+    // Kakao SDK 초기화
+    try {
+      if (window.Kakao) {
+        console.log("kakao execute");
+
+        if (!Kakao.isInitialized()) {
+          Kakao.init("ef36724c0d8e8f922928c9d3f6a45010");
+        }
+      }
+      if (!window.Kakao) {
+        console.error("kakao sdk is not load");
+      }
+    } catch (error) {
+      console.error("Error initializing Kakao SDK:", error);
+    }
     const fetchData = async () => {
       try {
         const result = await fetchCulturalInfo(culIdx, culIdx, {
@@ -624,9 +616,6 @@ function Cultural() {
   const handleBtnLeave = () => {
     setShowBtns(false);
   };
-  const isPreparing = () => {
-    alert("기능 준비중입니다...");
-  };
   const copyUrl = async () => {
     const url = window.location.href;
     try {
@@ -637,8 +626,32 @@ function Cultural() {
     }
   };
   const facebookShare = () => {
-    const location = window.location.href;
+    const location = window.location.origin.includes("sum529")
+      ? window.location.href
+      : "https://sum529-create.github.io" + window.location.pathname;
     window.open("http://www.facebook.com/sharer.php?u=" + location);
+  };
+  const kakaoShare = () => {
+    const location = window.location.origin.includes("sum529")
+      ? window.location.href
+      : "https://sum529-create.github.io" + window.location.pathname;
+    Kakao.Share.createDefaultButton({
+      container: "#kakaotalk-sharing-btn",
+      objectType: "feed",
+      content: {
+        title: data ? data.TITLE : subData ? subData.TITLE : "",
+        description: data
+          ? data.PROGRAM
+          : subData?.PROGRAM
+          ? subData.PROGRAM
+          : "공연정보가 없습니다.",
+        imageUrl: data ? data.MAIN_IMG : subData ? subData.MAIN_IMG : "",
+        link: {
+          mobileWebUrl: location,
+          webUrl: location,
+        },
+      },
+    });
   };
   return (
     <>
@@ -687,7 +700,7 @@ function Cultural() {
                           alt="facebook"
                         />
                       </button>
-                      <button onClick={isPreparing}>
+                      <button id="kakaotalk-sharing-btn" onClick={kakaoShare}>
                         <img
                           src={require("../assets/icons/sns_kakao.png")}
                           alt="kakao"
