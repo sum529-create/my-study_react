@@ -7,10 +7,12 @@ import Router from "./Router";
 const queryClient = new QueryClient();
 
 ReactDOM.render(
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <Router />
-    </BrowserRouter>
-  </QueryClientProvider>,
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Router />
+      </BrowserRouter>
+    </QueryClientProvider>
+  </React.StrictMode>,
   document.getElementById("root")
 );
