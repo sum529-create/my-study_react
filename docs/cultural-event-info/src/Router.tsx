@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router";
 import App from "./App";
+import NotFound from "./NotFound";
 import Cultural from "./routes/Cultural";
 import Culturals from "./routes/Culturals";
 
@@ -9,6 +10,7 @@ const Router = () => (
       <Route index element={<Culturals />} />
       <Route path=":culturalIdx" element={<Cultural />} />
     </Route>
+    <Route path="*" element={<NotFound />} />
   </Routes>
 );
 
