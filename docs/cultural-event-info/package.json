@@ -11,7 +11,7 @@
     "@types/jest": "^29.5.6",
     "@types/node": "^20.8.7",
     "@types/react": "^18.2.30",
-    "@types/react-dom": "^18.2.14",
+    "@types/react-dom": "^18.2.18",
     "axios": "^1.5.1",
     "cors": "^2.8.5",
     "cors-anywhere": "^0.4.4",
@@ -24,8 +24,8 @@
     "react-helmet": "^6.1.0",
     "react-paginate": "^8.2.0",
     "react-query": "^3.39.3",
-    "react-router-dom": "^6.4.5",
-    "react-scripts": "5.0.1",
+    "react-router-dom": "^6.21.3",
+    "react-scripts": "^5.0.1",
     "styled-components": "^6.0.0-rc.3",
     "typescript": "^5.2.2",
     "web-vitals": "^2.1.4"
@@ -33,6 +33,7 @@
   "scripts": {
     "start": "export PORT=3002 && react-scripts start",
     "start-proxy": "node proxy.js",
+    "start-hash": "react-scripts start --no-single-run",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

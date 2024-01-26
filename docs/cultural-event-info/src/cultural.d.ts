@@ -1,3 +1,11 @@
+declare module "react-dom" {
+  interface Root {
+    render(children: React.ReactNode): void;
+  }
+
+  function createRoot(container: Element | null): Root;
+}
+
 export interface ICultural {
   CODENAME: string;
   GUNAME: string;

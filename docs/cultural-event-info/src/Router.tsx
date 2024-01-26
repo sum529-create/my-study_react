@@ -5,7 +5,7 @@ import Culturals from "./routes/Culturals";
 
 const Router = () => (
   <Routes>
-    <Route path="/" element={<App />}>
+    <Route path="/*" element={<App />}>
       <Route index element={<Culturals />} />
       <Route path=":culturalIdx" element={<Cultural />} />
     </Route>
