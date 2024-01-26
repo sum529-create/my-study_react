@@ -9,7 +9,7 @@ const queryClient = new QueryClient();
 ReactDOM.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
+      <BrowserRouter basename="/my-study_react/cultural-event-info">
         <Router />
       </BrowserRouter>
     </QueryClientProvider>
