@@ -3,6 +3,9 @@ const { createProxyMiddleware } = require("http-proxy-middleware");
 
 const app = express();
 const path = require("path");
+const cors = require("cors");
+
+app.use(cors());
 
 // CORS 설정 추가
 app.use((req, res, next) => {
