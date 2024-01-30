@@ -632,6 +632,8 @@ function Cultural() {
       : "https://sum529-create.github.io" +
         window.location.pathname +
         window.location.hash;
+    console.log(location);
+
     window.open("http://www.facebook.com/sharer.php?u=" + location);
   };
   const kakaoShare = () => {

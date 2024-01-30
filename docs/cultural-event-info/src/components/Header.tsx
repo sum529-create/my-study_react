@@ -61,6 +61,15 @@ const Header = () => {
     <>
       <Helmet>
         <title>서울 문화 정보</title>
+        <meta property="og:title" content="서울 문화 정보" />
+        <meta
+          property="og:desciption"
+          content="서울 문화 정보 리스트를 조회/검색 할 수 있는 사이트입니다."
+        />
+        <meta
+          property="og:image"
+          content="https://sum529-create.github.io/my-study_react/cultural-event-info/mainImg.jpeg"
+        />
       </Helmet>
       <MyHeader>
         <Background />
