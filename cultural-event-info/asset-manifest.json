@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/my-study_react/cultural-event-info/static/css/main.3aaf4c52.css",
-    "main.js": "/my-study_react/cultural-event-info/static/js/main.5ac7c712.js",
+    "main.js": "/my-study_react/cultural-event-info/static/js/main.c0642331.js",
     "index.html": "/my-study_react/cultural-event-info/index.html",
     "main.3aaf4c52.css.map": "/my-study_react/cultural-event-info/static/css/main.3aaf4c52.css.map",
-    "main.5ac7c712.js.map": "/my-study_react/cultural-event-info/static/js/main.5ac7c712.js.map"
+    "main.c0642331.js.map": "/my-study_react/cultural-event-info/static/js/main.c0642331.js.map"
   },
   "entrypoints": [
     "static/css/main.3aaf4c52.css",
-    "static/js/main.5ac7c712.js"
+    "static/js/main.c0642331.js"
   ]
 }
