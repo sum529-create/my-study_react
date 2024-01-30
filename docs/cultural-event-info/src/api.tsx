@@ -6,9 +6,9 @@ const isMobile =
   );
 
 const getBaseUrl = () => {
-  // 만약 현재 실행 환경이 브라우저이고, 모바일 기기라면
+  // 현재 실행 환경이 브라우저이고 모바일 기기라면
   if (typeof window !== "undefined" && isMobile) {
-    // 모바일 기기용 서버 주소를 반환
+    // 모바일 기기용 서버 주소 반환
     return "http://192.168.227.220:8080";
   } else {
     // 그 외의 경우 또는 로컬 개발 환경이라면
@@ -18,8 +18,8 @@ const getBaseUrl = () => {
 
 const BASE_URL = getBaseUrl();
 
-// 실제 서버 주소에 "/proxy"를 추가
-const FINAL_BASE_URL = BASE_URL + "/proxy";
+// API 엔드포인트에 대한 상대 경로 사용
+const API_ENDPOINT = "/proxy/api/cultural-event-info";
 
 export const fetchCulturalInfo = async (
   startIdx: number,
@@ -31,7 +31,7 @@ export const fetchCulturalInfo = async (
   } = {}
 ) => {
   const { codeNm, title, date } = options;
-  let url = `${FINAL_BASE_URL}/api/cultural-event-info/${startIdx}/${endIdx}/`;
+  let url = `${BASE_URL}${API_ENDPOINT}/${startIdx}/${endIdx}/`;
 
   if (codeNm) url += `${codeNm}/`;
   if (title) url += `${title}/`;
@@ -41,7 +41,7 @@ export const fetchCulturalInfo = async (
     const response = await axios.get(url);
     return response.data.culturalEventInfo;
   } catch (error: any) {
-    console.error("Error fetching data:", error);
+    console.error("데이터를 가져오는 중 오류 발생:", error);
     throw new Error(error.message);
   }
 };
