@@ -627,15 +627,19 @@ function Cultural() {
     }
   };
   const facebookShare = () => {
-    const location = window.location.origin.includes("#")
+    const location = window.location.href.includes("#")
       ? window.location.href
-      : "https://sum529-create.github.io" + window.location.pathname;
+      : "https://sum529-create.github.io" +
+        window.location.pathname +
+        window.location.hash;
     window.open("http://www.facebook.com/sharer.php?u=" + location);
   };
   const kakaoShare = () => {
-    const location = window.location.origin.includes("#")
+    const location = window.location.href.includes("#")
       ? window.location.href
-      : "https://sum529-create.github.io" + window.location.pathname;
+      : "https://sum529-create.github.io" +
+        window.location.pathname +
+        window.location.hash;
     Kakao.Share.createDefaultButton({
       container: "#kakaotalk-sharing-btn",
       objectType: "feed",
