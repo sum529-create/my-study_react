@@ -550,17 +550,17 @@ function Cultural() {
     // Kakao SDK 초기화
     try {
       if (window.Kakao) {
-        console.log("kakao execute");
+        // console.log("kakao execute");
 
         if (!Kakao.isInitialized()) {
           Kakao.init("ef36724c0d8e8f922928c9d3f6a45010");
         }
       }
       if (!window.Kakao) {
-        console.error("kakao sdk is not load");
+        // console.error("kakao sdk is not load");
       }
     } catch (error) {
-      console.error("Error initializing Kakao SDK:", error);
+      // console.error("Error initializing Kakao SDK:", error);
     }
     const fetchData = async () => {
       try {
@@ -626,13 +626,13 @@ function Cultural() {
     }
   };
   const facebookShare = () => {
-    const location = window.location.origin.includes("sum529")
+    const location = window.location.origin.includes("cultural-event-info")
       ? window.location.href
       : "https://sum529-create.github.io" + window.location.pathname;
     window.open("http://www.facebook.com/sharer.php?u=" + location);
   };
   const kakaoShare = () => {
-    const location = window.location.origin.includes("sum529")
+    const location = window.location.origin.includes("cultural-event-info")
       ? window.location.href
       : "https://sum529-create.github.io" + window.location.pathname;
     Kakao.Share.createDefaultButton({
