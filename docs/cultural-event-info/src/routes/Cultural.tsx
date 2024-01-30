@@ -5,6 +5,7 @@ import { fetchCulturalInfo } from "../api";
 import Header from "../components/Header";
 import { formateDate } from "../utils/helpers";
 import { ICultural } from "../cultural";
+import { Helmet } from "react-helmet";
 
 const Container = styled.div`
   position: relative;
@@ -655,6 +656,27 @@ function Cultural() {
   };
   return (
     <>
+      <Helmet>
+        <title>{data ? data.TITLE : subData ? subData.TITLE : ""}</title>
+        <meta
+          property="og:title"
+          content={data ? data.TITLE : subData ? subData.TITLE : ""}
+        />
+        <meta
+          property="og:description"
+          content={
+            data
+              ? data.PROGRAM
+              : subData?.PROGRAM
+              ? subData.PROGRAM
+              : "공연정보가 없습니다."
+          }
+        />
+        <meta
+          property="og:image"
+          content={data ? data.MAIN_IMG : subData ? subData.MAIN_IMG : ""}
+        />
+      </Helmet>
       <Container>
         <Header />
         {!loading ? (
