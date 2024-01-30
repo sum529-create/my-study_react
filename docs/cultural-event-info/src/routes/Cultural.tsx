@@ -627,13 +627,13 @@ function Cultural() {
     }
   };
   const facebookShare = () => {
-    const location = window.location.origin.includes("cultural-event-info")
+    const location = window.location.origin.includes("#")
       ? window.location.href
       : "https://sum529-create.github.io" + window.location.pathname;
     window.open("http://www.facebook.com/sharer.php?u=" + location);
   };
   const kakaoShare = () => {
-    const location = window.location.origin.includes("cultural-event-info")
+    const location = window.location.origin.includes("#")
       ? window.location.href
       : "https://sum529-create.github.io" + window.location.pathname;
     Kakao.Share.createDefaultButton({
