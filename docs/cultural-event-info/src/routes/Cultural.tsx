@@ -632,9 +632,9 @@ function Cultural() {
       : "https://sum529-create.github.io" +
         window.location.pathname +
         window.location.hash;
-    console.log(location);
+    const encodedUrl = encodeURIComponent(location);
 
-    window.open("http://www.facebook.com/sharer.php?u=" + location);
+    window.open("http://www.facebook.com/sharer.php?u=" + encodedUrl);
   };
   const kakaoShare = () => {
     const location = window.location.href.includes("#")
@@ -642,6 +642,7 @@ function Cultural() {
       : "https://sum529-create.github.io" +
         window.location.pathname +
         window.location.hash;
+    const encodedUrl = encodeURIComponent(location);
     Kakao.Share.createDefaultButton({
       container: "#kakaotalk-sharing-btn",
       objectType: "feed",
@@ -654,8 +655,8 @@ function Cultural() {
           : "공연정보가 없습니다.",
         imageUrl: data ? data.MAIN_IMG : subData ? subData.MAIN_IMG : "",
         link: {
-          mobileWebUrl: location,
-          webUrl: location,
+          mobileWebUrl: encodedUrl,
+          webUrl: encodedUrl,
         },
       },
     });
