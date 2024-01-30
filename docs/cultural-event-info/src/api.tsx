@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // 프록시 서버 주소로 수정
-const BASE_URL = "http://localhost:8080/proxy";
+const BASE_URL = "http://127.0.0.1:8080/proxy";
 
 export const fetchCulturalInfo = async (
   startIdx: number,
