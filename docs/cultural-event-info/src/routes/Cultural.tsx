@@ -642,7 +642,7 @@ function Cultural() {
       : "https://sum529-create.github.io" +
         window.location.pathname +
         window.location.hash;
-    const encodedUrl = encodeURIComponent(location);
+
     Kakao.Share.createDefaultButton({
       container: "#kakaotalk-sharing-btn",
       objectType: "feed",
@@ -655,8 +655,8 @@ function Cultural() {
           : "공연정보가 없습니다.",
         imageUrl: data ? data.MAIN_IMG : subData ? subData.MAIN_IMG : "",
         link: {
-          mobileWebUrl: encodedUrl,
-          webUrl: encodedUrl,
+          mobileWebUrl: location,
+          webUrl: location,
         },
       },
     });
