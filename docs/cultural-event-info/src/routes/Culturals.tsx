@@ -730,6 +730,11 @@ function Culturals() {
   const moveTopBtn = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+  const handleOnKeyPress = (e) => {
+    if (e.key === "Enter") {
+      onClickSearch();
+    }
+  };
   return (
     <Container>
       <Header />
@@ -758,6 +763,7 @@ function Culturals() {
             ref={searchTitle}
             type="text"
             placeholder="검색어를 입력하세요."
+            onKeyPress={handleOnKeyPress}
           />
           <button onClick={onClickSearch} className="btn">
             검색
@@ -790,7 +796,11 @@ function Culturals() {
                   {fetchData?.row.map((e, i) => (
                     <li key={i}>
                       <Link
-                        to={`/${currentPage}${String(i + 1).padStart(3, "0")}`}
+                        to={`/${
+                          e.HMPG_ADDR.includes("cultcode=")
+                            ? e.HMPG_ADDR.match(/cultcode=(\d+)/)?.[1]
+                            : "0000"
+                        }`}
                         state={{ data: e }}
                       >
                         <ImgArea imgurl={e.MAIN_IMG}>
