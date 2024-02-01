@@ -543,7 +543,8 @@ const Loading = styled.div`
 function Cultural() {
   const location = useLocation();
   const { culturalIdx } = useParams();
-  const culIdx = Number(culturalIdx);
+  const culIdx = Number(culturalIdx?.substring(6));
+
   const data = location.state?.data || null;
   const [subData, setSubData] = useState<ICultural>(data);
   const { Kakao } = window;

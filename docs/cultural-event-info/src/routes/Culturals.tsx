@@ -797,9 +797,10 @@ function Culturals() {
                     <li key={i}>
                       <Link
                         to={`/${
-                          e.HMPG_ADDR.includes("cultcode=")
+                          (e.HMPG_ADDR.includes("cultcode=")
                             ? e.HMPG_ADDR.match(/cultcode=(\d+)/)?.[1]
-                            : "0000"
+                            : "000000") +
+                          (currentPage + String(i + 1).padStart(1, "0"))
                         }`}
                         state={{ data: e }}
                       >
