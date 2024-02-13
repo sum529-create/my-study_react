@@ -22,6 +22,13 @@ const Section = styled.div`
   margin: 0 auto;
   padding: 1.25rem;
   max-width: 1400px;
+  input {
+    min-width: 100px;
+  }
+  .react-datepicker-popper {
+    z-index: 999 !important;
+    position: relative;
+  }
 `;
 
 const SearchArea = styled.div`
@@ -34,8 +41,8 @@ const SearchArea = styled.div`
   gap: 10px;
   border: 1px solid #dcdde1;
   .react-datepicker-wrapper {
-    width: 20%;
-    min-width: 120px;
+    width: 13%;
+    min-width: 100px;
     .date {
       width: 100%;
     }
@@ -44,11 +51,11 @@ const SearchArea = styled.div`
     }
   }
   select#codeName {
-    min-width: 100px;
+    min-width: 80px;
   }
   @media (min-width: 768px) {
     input[type="text"] {
-      flex: 1;
+      flex: auto;
     }
   }
   .btn,
@@ -408,7 +415,7 @@ const ImgArea = styled.div<{ imgurl?: string }>`
   }
   .cultural_tag {
     position: absolute;
-    z-index: 999;
+    z-index: 3;
     width: 35%;
     background-color: #e2e2e2;
     right: 0;
@@ -533,20 +540,31 @@ function Culturals() {
   const [currentPage, setCurrentPage] = useState(0);
   const [fetchData, setFetchData] = useState<ICulturalResponse | null>(null);
   const [selectCodeNm, setSelectCodeNm] = useState("");
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedStrDate, setSelectedStrDate] = useState<Date | null>(null);
+  const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   let searchTitle = useRef<HTMLInputElement>(document.createElement("input"));
   const { isLoading, data } = useQuery<ICulturalResponse>(
     ["allCulturals", startIdx, endIdx],
     async () => {
       var culturalDate = " ";
-      if (selectedDate) {
-        culturalDate = formateDate(selectedDate);
+      if (selectedStrDate || selectedEndDate) {
+        if (!selectedStrDate) {
+          alert("시작날짜를 입력해주세요");
+          return false;
+        }
+        if (!selectedEndDate) {
+          alert("종료날짜를 입력해주세요");
+          return false;
+        }
+        culturalDate =
+          formateDate(selectedStrDate) + "~" + formateDate(selectedEndDate);
       }
+
       return fetchCulturalInfo(startIdx, endIdx, {
-        codeNm: selectCodeNm ? selectCodeNm : " ",
+        codeNm: selectCodeNm ? selectCodeNm.split("/")[0].trim() : " ",
         title: searchTitle.current.value ? searchTitle.current.value : " ",
-        date: selectedDate ? culturalDate : " ",
+        date: selectedStrDate && selectedEndDate ? culturalDate : " ",
       });
     },
     {
@@ -583,13 +601,14 @@ function Culturals() {
     setCurrentPage(selected);
 
     var culturalDate = " ";
-    if (selectedDate) {
-      culturalDate = formateDate(selectedDate);
+    if (selectedStrDate && selectedEndDate) {
+      culturalDate =
+        formateDate(selectedStrDate) + "~" + formateDate(selectedEndDate);
     }
     const newData = await fetchCulturalInfo(newStartIdx, newEndIdx, {
-      codeNm: selectCodeNm ? selectCodeNm : " ",
+      codeNm: selectCodeNm ? selectCodeNm.split("/")[0].trim() : " ",
       title: searchTitle.current.value ? searchTitle.current.value : " ",
-      date: selectedDate ? culturalDate : " ",
+      date: selectedStrDate && selectedEndDate ? culturalDate : " ",
     });
 
     setFetchData(newData);
@@ -617,11 +636,16 @@ function Culturals() {
         }
         if (scrollY + innerHeight >= scrollHeight - 200) {
           setIsLoadingMoreData(true); // 추가 데이터 로딩 중으로 설정
-          var culturalDate = selectedDate ? formateDate(selectedDate) : "";
+          var culturalDate =
+            selectedStrDate && selectedEndDate
+              ? formateDate(selectedStrDate) +
+                "~" +
+                formateDate(selectedEndDate)
+              : "";
           // API 요청
           if (hasMoreData) {
             fetchCulturalInfo(startIdx, endIdx, {
-              codeNm: selectCodeNm || " ",
+              codeNm: selectCodeNm.split("/")[0].trim() || " ",
               title: searchTitle.current.value || " ",
               date: culturalDate || " ",
             })
@@ -661,7 +685,8 @@ function Culturals() {
     isLoading,
     isLoadingMoreData,
     selectCodeNm,
-    selectedDate,
+    selectedStrDate,
+    selectedEndDate,
     startIdx,
   ]);
   const onClickSearch = async () => {
@@ -669,24 +694,33 @@ function Culturals() {
     setStartIdx(1);
     setEndIdx(9);
     var culturalDate = " ";
-    if (selectedDate) {
-      culturalDate = formateDate(selectedDate);
+    if (selectedStrDate && selectedEndDate) {
+      culturalDate =
+        formateDate(selectedStrDate) + "~" + formateDate(selectedEndDate);
+    } else if (selectedStrDate && !selectedEndDate) {
+      alert("종료날짜를 입력해주세요.");
+      return false;
+    } else if (!selectedStrDate && selectedEndDate) {
+      alert("시작날짜를 입력해주세요.");
+      return false;
     }
+
     const newData = await fetchCulturalInfo(startIdx, endIdx, {
       codeNm: selectCodeNm
         ? selectCodeNm === "전체"
           ? " "
-          : encodeURIComponent(selectCodeNm)
+          : selectCodeNm.split("/")[0].trim()
         : " ",
       title: searchTit ? searchTit : " ",
-      date: selectedDate ? culturalDate : " ",
+      date: selectedStrDate && selectedEndDate ? culturalDate : " ",
     });
 
     setFetchData(newData);
     setCurrentPage(0);
   };
   const onClickSearchReset = async () => {
-    setSelectedDate(null);
+    setSelectedStrDate(null);
+    setSelectedEndDate(null);
     setSelectCodeNm("전체");
     searchTitle.current.value = "";
     setStartIdx(1);
@@ -724,8 +758,11 @@ function Culturals() {
       handlePageChange({ selected: currentPage + 10 });
     }
   };
-  const handleDateChange = (date: Date) => {
-    setSelectedDate(date);
+  const handleStrDateChange = (date: Date) => {
+    setSelectedStrDate(date);
+  };
+  const handleEndDateChange = (date: Date) => {
+    setSelectedEndDate(date);
   };
   const moveTopBtn = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -742,8 +779,16 @@ function Culturals() {
         <SearchArea>
           <DatePicker
             className="date"
-            selected={selectedDate}
-            onChange={handleDateChange}
+            selected={selectedStrDate}
+            onChange={handleStrDateChange}
+            dateFormat="yyyy-MM-dd"
+            placeholderText="날짜를 선택하세요"
+          />
+          ~
+          <DatePicker
+            className="date"
+            selected={selectedEndDate}
+            onChange={handleEndDateChange}
             dateFormat="yyyy-MM-dd"
             placeholderText="날짜를 선택하세요"
           />
