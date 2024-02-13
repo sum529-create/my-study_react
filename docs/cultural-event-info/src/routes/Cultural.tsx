@@ -540,6 +540,14 @@ const Loading = styled.div`
     width: 100px;
   }
 `;
+function extractTitle(title: string): string {
+  const match = /\[(.*?)\]/.exec(title);
+  return match ? match[1] : title;
+}
+function extractCodeName(codeName: string): string {
+  const index = codeName.indexOf("/");
+  return index !== -1 ? codeName.substring(0, index) : codeName;
+}
 function Cultural() {
   const location = useLocation();
   const { culturalInfo } = useParams();
@@ -574,14 +582,11 @@ function Cultural() {
     const fetchData = async () => {
       try {
         const result = await fetchCulturalInfo(1, 9, {
-          codeNm: subCodeNm && subCodeNm[1] ? subCodeNm[1].toString() : "%20",
-          title:
-            subTit && subTit[1]
-              ? subTit[1].replace(/\[.*?\]/, "").trim()
-              : "%20",
+          codeNm:
+            subCodeNm && subCodeNm[1] ? extractCodeName(subCodeNm[1]) : "%20",
+          title: subTit && subTit[1] ? extractTitle(subTit[1]) : "%20",
           date: subDate && subDate[1] ? subDate[1].toString() : "%20",
         });
-        // console.log("Fetch successful:", result);
 
         if (result && result.RESULT && result.RESULT.CODE === "INFO-000") {
           const rowData = result.row;
