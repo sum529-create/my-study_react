@@ -574,9 +574,12 @@ function Cultural() {
     const fetchData = async () => {
       try {
         const result = await fetchCulturalInfo(1, 9, {
-          codeNm: subCodeNm && subCodeNm[1] ? subCodeNm[1].toString() : "",
-          title: subTit && subTit[1] ? subTit[1].toString() : "",
-          date: subDate && subDate[1] ? subDate[1].toString() : "",
+          codeNm: subCodeNm && subCodeNm[1] ? subCodeNm[1].toString() : "%20",
+          title:
+            subTit && subTit[1]
+              ? subTit[1].replace(/\[.*?\]/, "").trim()
+              : "%20",
+          date: subDate && subDate[1] ? subDate[1].toString() : "%20",
         });
         // console.log("Fetch successful:", result);
 

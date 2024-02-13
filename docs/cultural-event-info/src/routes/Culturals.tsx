@@ -847,7 +847,7 @@ function Culturals() {
                     <li key={i}>
                       <Link
                         to={`/${encodeURIComponent(
-                          "titie=" +
+                          "title=" +
                             e.TITLE +
                             "&codename=" +
                             e.CODENAME +
