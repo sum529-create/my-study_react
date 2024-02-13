@@ -560,10 +560,11 @@ function Culturals() {
         culturalDate =
           formateDate(selectedStrDate) + "~" + formateDate(selectedEndDate);
       }
-
+      const searchTit = searchTitle.current.value;
+      const match = searchTit.match(/\[([^\]]+)\]/);
       return fetchCulturalInfo(startIdx, endIdx, {
         codeNm: selectCodeNm ? selectCodeNm.split("/")[0].trim() : " ",
-        title: searchTitle.current.value ? searchTitle.current.value : " ",
+        title: searchTit ? (match ? match[1] : searchTit) : " ",
         date: selectedStrDate && selectedEndDate ? culturalDate : " ",
       });
     },
@@ -605,9 +606,11 @@ function Culturals() {
       culturalDate =
         formateDate(selectedStrDate) + "~" + formateDate(selectedEndDate);
     }
+    const searchTit = searchTitle.current.value;
+    const match = searchTit.match(/\[([^\]]+)\]/);
     const newData = await fetchCulturalInfo(newStartIdx, newEndIdx, {
       codeNm: selectCodeNm ? selectCodeNm.split("/")[0].trim() : " ",
-      title: searchTitle.current.value ? searchTitle.current.value : " ",
+      title: searchTit ? (match ? match[1] : searchTit) : " ",
       date: selectedStrDate && selectedEndDate ? culturalDate : " ",
     });
 
@@ -643,10 +646,12 @@ function Culturals() {
                 formateDate(selectedEndDate)
               : "";
           // API 요청
+          const searchTit = searchTitle.current.value;
+          const match = searchTit.match(/\[([^\]]+)\]/);
           if (hasMoreData) {
             fetchCulturalInfo(startIdx, endIdx, {
               codeNm: selectCodeNm.split("/")[0].trim() || " ",
-              title: searchTitle.current.value || " ",
+              title: match ? match[1] : searchTit || " ",
               date: culturalDate || " ",
             })
               .then((newData) => {
@@ -704,14 +709,14 @@ function Culturals() {
       alert("시작날짜를 입력해주세요.");
       return false;
     }
-
+    const match = searchTit.match(/\[([^\]]+)\]/);
     const newData = await fetchCulturalInfo(startIdx, endIdx, {
       codeNm: selectCodeNm
         ? selectCodeNm === "전체"
           ? " "
           : selectCodeNm.split("/")[0].trim()
         : " ",
-      title: searchTit ? searchTit : " ",
+      title: searchTit ? (match ? match[1] : searchTit) : " ",
       date: selectedStrDate && selectedEndDate ? culturalDate : " ",
     });
 
