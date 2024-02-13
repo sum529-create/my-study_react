@@ -7,7 +7,7 @@ const Router = () => (
   <Routes>
     <Route path="/*" element={<App />}>
       <Route index element={<Culturals />} />
-      <Route path=":culturalIdx" element={<Cultural />} />
+      <Route path=":culturalInfo" element={<Cultural />} />
     </Route>
   </Routes>
 );

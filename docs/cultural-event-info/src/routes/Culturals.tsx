@@ -846,12 +846,14 @@ function Culturals() {
                   {fetchData?.row.map((e, i) => (
                     <li key={i}>
                       <Link
-                        to={`/${
-                          (e.HMPG_ADDR.includes("cultcode=")
-                            ? e.HMPG_ADDR.match(/cultcode=(\d+)/)?.[1]
-                            : "000000") +
-                          (currentPage + String(i + 1).padStart(1, "0"))
-                        }`}
+                        to={`/${encodeURIComponent(
+                          "titie=" +
+                            e.TITLE +
+                            "&codename=" +
+                            e.CODENAME +
+                            "&date=" +
+                            e.DATE
+                        )}`}
                         state={{ data: e }}
                       >
                         <ImgArea imgurl={e.MAIN_IMG}>

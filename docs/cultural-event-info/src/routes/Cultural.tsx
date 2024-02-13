@@ -542,8 +542,15 @@ const Loading = styled.div`
 `;
 function Cultural() {
   const location = useLocation();
-  const { culturalIdx } = useParams();
-  const culIdx = Number(culturalIdx?.substring(6));
+  const { culturalInfo } = useParams();
+  let subTit: RegExpMatchArray | null = null;
+  let subCodeNm: RegExpMatchArray | null = null;
+  let subDate: RegExpMatchArray | null = null;
+  if (culturalInfo) {
+    subTit = culturalInfo.match(/title=([^&]+)/);
+    subCodeNm = culturalInfo.match(/codename=([^&]+)/);
+    subDate = culturalInfo.match(/date=(\d{4}-\d{2}-\d{2}~\d{4}-\d{2}-\d{2})/);
+  }
 
   const data = location.state?.data || null;
   const [subData, setSubData] = useState<ICultural>(data);
@@ -566,10 +573,10 @@ function Cultural() {
     }
     const fetchData = async () => {
       try {
-        const result = await fetchCulturalInfo(culIdx, culIdx, {
-          codeNm: " ",
-          title: " ",
-          date: " ",
+        const result = await fetchCulturalInfo(1, 9, {
+          codeNm: subCodeNm && subCodeNm[1] ? subCodeNm[1].toString() : "",
+          title: subTit && subTit[1] ? subTit[1].toString() : "",
+          date: subDate && subDate[1] ? subDate[1].toString() : "",
         });
         // console.log("Fetch successful:", result);
 
@@ -591,7 +598,7 @@ function Cultural() {
       }
     };
 
-    if (culturalIdx && !data) {
+    if (culturalInfo && !data) {
       // console.log("Fetching data...");
       fetchData();
     } else if (data) {
