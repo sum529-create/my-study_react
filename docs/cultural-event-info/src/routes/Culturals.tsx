@@ -78,13 +78,31 @@ const SearchArea = styled.div`
   }
 `;
 
-const Total = styled.div`
+const TopArea = styled.div`
   margin: 30px 0 16px 0;
   border-bottom: 2px solid #333;
   margin-bottom: 30px;
   padding: 19px 0;
   font-weight: 500;
   color: #333;
+  display: flex;
+  justify-content: space-between;
+  .sort {
+    ul {
+      display: flex;
+      li {
+        cursor: pointer;
+        &:hover {
+          color: #ac2f30;
+        }
+        &:not(:last-of-type)::after {
+          content: "|";
+          margin: 4px;
+          color: #333;
+        }
+      }
+    }
+  }
   strong {
     color: #ac2f30;
   }
@@ -93,6 +111,7 @@ const Total = styled.div`
   }
 `;
 const Loading = styled.div`
+  clear: both;
   @keyframes rotate-loading {
     0% {
       transform: rotate(0deg);
@@ -349,6 +368,7 @@ interface RouteParams {
   endIdx: number;
 }
 const CultureList = styled.div`
+  clear: both;
   ul {
     display: flex;
     flex-wrap: wrap;
@@ -543,31 +563,50 @@ function Culturals() {
   const [selectedStrDate, setSelectedStrDate] = useState<Date | null>(null);
   const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [isSelectSort, setIsSelectSort] = useState(false);
   let searchTitle = useRef<HTMLInputElement>(document.createElement("input"));
-  const { isLoading, data } = useQuery<ICulturalResponse>(
-    ["allCulturals", startIdx, endIdx],
-    async () => {
-      var culturalDate = " ";
-      if (selectedStrDate || selectedEndDate) {
-        if (!selectedStrDate) {
-          alert("시작날짜를 입력해주세요");
-          return false;
-        }
-        if (!selectedEndDate) {
-          alert("종료날짜를 입력해주세요");
-          return false;
-        }
-        culturalDate =
-          formateDate(selectedStrDate) + "~" + formateDate(selectedEndDate);
-      }
-      const searchTit = searchTitle.current.value;
+  const onClickSearch = async (): Promise<ICulturalResponse | null> => {
+    console.log("검색중");
+    const searchTit = searchTitle.current.value;
+    setStartIdx(1);
+    setEndIdx(9);
+    var culturalDate = " ";
+    if (selectedStrDate && selectedEndDate) {
+      culturalDate =
+        formateDate(selectedStrDate) + "~" + formateDate(selectedEndDate);
+    } else if (selectedStrDate && !selectedEndDate) {
+      alert("종료날짜를 입력해주세요.");
+      // return false;
+      return Promise.reject("종료날짜를 입력해주세요.");
+    } else if (!selectedStrDate && selectedEndDate) {
+      alert("시작날짜를 입력해주세요.");
+      // return false;
+      return Promise.reject("시작날짜를 입력해주세요.");
+    }
+    try {
       const match = searchTit.match(/\[([^\]]+)\]/);
-      return fetchCulturalInfo(startIdx, endIdx, {
-        codeNm: selectCodeNm ? selectCodeNm.split("/")[0].trim() : " ",
+      const newData = await fetchCulturalInfo(startIdx, endIdx, {
+        codeNm: selectCodeNm
+          ? selectCodeNm === "전체" || selectCodeNm === ""
+            ? " "
+            : selectCodeNm.split("/")[0].trim()
+          : " ",
         title: searchTit ? (match ? match[1] : searchTit) : " ",
         date: selectedStrDate && selectedEndDate ? culturalDate : " ",
       });
-    },
+      console.log(newData);
+
+      setFetchData(newData);
+      setCurrentPage(0);
+      return newData;
+    } catch (error) {
+      console.error("Error during search:", error);
+      return Promise.reject(error);
+    }
+  };
+  const { isLoading, data } = useQuery<ICulturalResponse | null>(
+    ["allCulturals", startIdx, endIdx],
+    onClickSearch,
     {
       enabled: startIdx === 1, // enabled -> 값이 존재할때만 쿼리 요청 (자동실행 방지)
     }
@@ -621,7 +660,41 @@ function Culturals() {
   };
   const [isLoadingMoreData, setIsLoadingMoreData] = useState(false); // 추가 데이터 로딩 중 여부
   const [hasMoreData, setHasMoreData] = useState(true); // 더 이상 데이터가 없는지 여부
+  const toggleIsSelectSort = () => {
+    console.log("이번달 선택");
 
+    console.log(isSelectSort);
+    setIsSelectSort((prevValue) => !prevValue);
+  };
+  const sortByCurrentMonth = () => {
+    console.log(isSelectSort);
+    if (isSelectSort) {
+      const currentDate = new window.Date();
+
+      const thisStrMonth = new window.Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        1
+      );
+      const thisEndMonth = new window.Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() + 1,
+        0
+      );
+      setSelectedStrDate(thisStrMonth);
+      setSelectedEndDate(thisEndMonth);
+    } else {
+      setSelectedStrDate(null);
+      setSelectedEndDate(null);
+    }
+
+    // const thisMonth =
+    //   formateDate(thisStrMonth) + "~" + formateDate(thisEndMonth);
+  };
+  useEffect(() => {
+    console.log("되냐?");
+    sortByCurrentMonth();
+  }, [isSelectSort]);
   useEffect(() => {
     const handleScroll = _.throttle(() => {
       if (isLoading || isLoadingMoreData || !hasMoreData) {
@@ -674,9 +747,13 @@ function Culturals() {
         }
       }
     }, 500);
+    console.log("기존 이벤트 들어옴");
+    console.log(data);
+    console.log(selectedEndDate);
 
-    if (data) {
-      setFetchData(data);
+    if (isSelectSort) {
+      onClickSearch();
+      console.log("다시 데이터 불러오기?");
     }
     window.addEventListener("scroll", handleScroll);
 
@@ -694,35 +771,7 @@ function Culturals() {
     selectedEndDate,
     startIdx,
   ]);
-  const onClickSearch = async () => {
-    const searchTit = searchTitle.current.value;
-    setStartIdx(1);
-    setEndIdx(9);
-    var culturalDate = " ";
-    if (selectedStrDate && selectedEndDate) {
-      culturalDate =
-        formateDate(selectedStrDate) + "~" + formateDate(selectedEndDate);
-    } else if (selectedStrDate && !selectedEndDate) {
-      alert("종료날짜를 입력해주세요.");
-      return false;
-    } else if (!selectedStrDate && selectedEndDate) {
-      alert("시작날짜를 입력해주세요.");
-      return false;
-    }
-    const match = searchTit.match(/\[([^\]]+)\]/);
-    const newData = await fetchCulturalInfo(startIdx, endIdx, {
-      codeNm: selectCodeNm
-        ? selectCodeNm === "전체"
-          ? " "
-          : selectCodeNm.split("/")[0].trim()
-        : " ",
-      title: searchTit ? (match ? match[1] : searchTit) : " ",
-      date: selectedStrDate && selectedEndDate ? culturalDate : " ",
-    });
 
-    setFetchData(newData);
-    setCurrentPage(0);
-  };
   const onClickSearchReset = async () => {
     setSelectedStrDate(null);
     setSelectedEndDate(null);
@@ -777,6 +826,9 @@ function Culturals() {
       onClickSearch();
     }
   };
+
+  // 최신순으로 정렬
+  const sortByLastestItem = () => {};
   return (
     <Container>
       <Header />
@@ -822,15 +874,29 @@ function Culturals() {
             초기화
           </button>
         </SearchArea>
-        <Total>
-          총{" "}
-          <strong>
-            {fetchData && fetchData.list_total_count > 0
-              ? fetchData.list_total_count
-              : 0}
-          </strong>
-          개
-        </Total>
+        <TopArea>
+          <div className="total">
+            총{" "}
+            <strong>
+              {fetchData && fetchData.list_total_count > 0
+                ? fetchData.list_total_count
+                : 0}
+            </strong>
+            개
+          </div>
+          <div className="sort">
+            <ul>
+              <li
+                onClick={toggleIsSelectSort}
+                style={isSelectSort ? { color: "#ac2f30" } : {}}
+              >
+                이번달
+              </li>
+              <li onClick={sortByLastestItem}>최신순</li>
+              <li onClick={onClickSearch}>등록순</li>
+            </ul>
+          </div>
+        </TopArea>
         {fetchData && fetchData.list_total_count > 0 ? (
           isLoading ? (
             <Loading>
