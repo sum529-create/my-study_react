@@ -565,8 +565,10 @@ function Culturals() {
   const [isVisible, setIsVisible] = useState(false);
   const [isSelectSort, setIsSelectSort] = useState(false);
   const [isSelectRegSort, setIsSelectRegSort] = useState(false);
+  const isMounted = useRef(false);
+  const isRegMounted = useRef(false);
   let searchTitle = useRef<HTMLInputElement>(document.createElement("input"));
-  const onClickSearch = async (): Promise<ICulturalResponse | null> => {
+  const onClickSearch = async (): Promise<ICulturalResponse> => {
     const searchTit = searchTitle.current.value;
     var culturalDate = " ";
     if (selectedStrDate && selectedEndDate) {
@@ -574,11 +576,9 @@ function Culturals() {
         formateDate(selectedStrDate) + "~" + formateDate(selectedEndDate);
     } else if (selectedStrDate && !selectedEndDate) {
       alert("종료날짜를 입력해주세요.");
-      // return false;
       return Promise.reject("종료날짜를 입력해주세요.");
     } else if (!selectedStrDate && selectedEndDate) {
       alert("시작날짜를 입력해주세요.");
-      // return false;
       return Promise.reject("시작날짜를 입력해주세요.");
     }
     try {
@@ -594,7 +594,6 @@ function Culturals() {
         title: searchTit ? (match ? match[1] : searchTit) : " ",
         date: selectedStrDate && selectedEndDate ? culturalDate : " ",
       });
-      console.log(newData);
       console.log("onClick setFetchData Running");
 
       setFetchData(newData);
@@ -604,20 +603,9 @@ function Culturals() {
       return Promise.reject(error);
     }
   };
-  const fetchDataHandler = async (): Promise<ICulturalResponse | null> => {
-    try {
-      const newData = await onClickSearch();
-      console.log("fetchDataHandler Running");
-      setFetchData(newData);
-      return newData;
-    } catch (error) {
-      console.error("Error during fetchDataHandler:", error);
-      return Promise.reject(error);
-    }
-  };
   const { isLoading, data } = useQuery<ICulturalResponse | null>(
     ["allCulturals", startIdx, endIdx],
-    fetchDataHandler,
+    onClickSearch,
     {
       enabled: startIdx === 1, // enabled -> 값이 존재할때만 쿼리 요청 (자동실행 방지)
     }
@@ -646,7 +634,6 @@ function Culturals() {
   const handlePageChange = async ({ selected }: { selected: number }) => {
     try {
       let newStartIdx = 1;
-      console.log(fetchData);
 
       if (isSelectRegSort && fetchData) {
         newStartIdx =
@@ -687,6 +674,7 @@ function Culturals() {
   };
   const [isLoadingMoreData, setIsLoadingMoreData] = useState(false); // 추가 데이터 로딩 중 여부
   const [hasMoreData, setHasMoreData] = useState(true); // 더 이상 데이터가 없는지 여부
+  // 이번달
   const toggleIsSelectSort = () => {
     setSelectedStrDate(null);
     setSelectedEndDate(null);
@@ -697,7 +685,6 @@ function Culturals() {
   };
   const sortByCurrentMonth = async () => {
     let thisMonth = "";
-    console.log(isSelectSort);
 
     if (isSelectSort) {
       const currentDate = new window.Date();
@@ -727,7 +714,6 @@ function Culturals() {
           title: " ",
           date: thisMonth,
         });
-        console.log(newData);
 
         setFetchData(newData);
       } catch (error) {
@@ -745,7 +731,10 @@ function Culturals() {
     setSelectedEndDate(null);
     if (isSelectSort) {
       setIsSelectSort(false);
-      await onClickSearchReset();
+      setStartIdx(1);
+      setEndIdx(9);
+      await onClickSearch();
+      // await onClickSearchReset(); //
     }
     setIsSelectRegSort((e) => !e);
   };
@@ -753,10 +742,17 @@ function Culturals() {
     async function fetchSortByCurMon() {
       await sortByCurrentMonth();
     }
-    fetchSortByCurMon();
+    if (isMounted.current) {
+      fetchSortByCurMon();
+    } else {
+      isMounted.current = true;
+    }
   }, [isSelectSort]);
   useEffect(() => {
-    sortByRegDt();
+    if (isRegMounted.current) sortByRegDt();
+    else {
+      isRegMounted.current = true;
+    }
   }, [isSelectRegSort]);
   useEffect(() => {
     const handleScroll = _.throttle(() => {
@@ -826,10 +822,13 @@ function Culturals() {
     selectedEndDate,
     startIdx,
   ]);
-  // useEffect(() => {
-  //   onClickSearch();
-  // }, [selectedStrDate, selectedEndDate, selectCodeNm, searchTitle]);
   const onClickSearchReset = async () => {
+    if (isSelectSort) {
+      toggleIsSelectSort();
+    }
+    if (isSelectRegSort) {
+      toggleRegSort();
+    }
     setSelectedStrDate(null);
     setSelectedEndDate(null);
     setSelectCodeNm(" ");
