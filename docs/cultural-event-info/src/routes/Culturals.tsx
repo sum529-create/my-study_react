@@ -585,13 +585,16 @@ function Culturals() {
       const match = searchTit.match(/\[([^\]]+)\]/);
       const newData = await fetchCulturalInfo(startIdx, endIdx, {
         codeNm: selectCodeNm
-          ? selectCodeNm === "전체" || selectCodeNm === ""
+          ? selectCodeNm === "전체" ||
+            selectCodeNm === "" ||
+            selectCodeNm === " "
             ? " "
             : selectCodeNm.split("/")[0].trim()
           : " ",
         title: searchTit ? (match ? match[1] : searchTit) : " ",
         date: selectedStrDate && selectedEndDate ? culturalDate : " ",
       });
+      console.log(newData);
       console.log("onClick setFetchData Running");
 
       setFetchData(newData);
@@ -621,7 +624,7 @@ function Culturals() {
   );
 
   let codeNames: { [key: string]: string } = {
-    전체: "",
+    전체: " ",
     클래식: "#0097e6",
     콘서트: "#8c7ae6",
     "축제-전통/역사": "#e1b12c",
@@ -643,6 +646,7 @@ function Culturals() {
   const handlePageChange = async ({ selected }: { selected: number }) => {
     try {
       let newStartIdx = 1;
+      console.log(fetchData);
 
       if (isSelectRegSort && fetchData) {
         newStartIdx =
@@ -693,6 +697,8 @@ function Culturals() {
   };
   const sortByCurrentMonth = async () => {
     let thisMonth = "";
+    console.log(isSelectSort);
+
     if (isSelectSort) {
       const currentDate = new window.Date();
 
@@ -714,32 +720,40 @@ function Culturals() {
       setSelectedEndDate(null);
       thisMonth = " ";
     }
-    try {
-      const newData = await fetchCulturalInfo(1, 9, {
-        codeNm: " ",
-        title: " ",
-        date: thisMonth,
-      });
-      setFetchData(newData);
-    } catch (error) {
-      console.error("Error during search:", error);
-      return Promise.reject(error);
+    if (!isSelectRegSort) {
+      try {
+        const newData = await fetchCulturalInfo(1, 9, {
+          codeNm: " ",
+          title: " ",
+          date: thisMonth,
+        });
+        console.log(newData);
+
+        setFetchData(newData);
+      } catch (error) {
+        console.error("Error during search:", error);
+        return Promise.reject(error);
+      }
     }
   };
   const sortByRegDt = () => {
     handlePageChange({ selected: 0 });
   };
   // 최신순으로 정렬
-  const toggleRegSort = () => {
+  const toggleRegSort = async () => {
     setSelectedStrDate(null);
     setSelectedEndDate(null);
     if (isSelectSort) {
       setIsSelectSort(false);
+      await onClickSearchReset();
     }
     setIsSelectRegSort((e) => !e);
   };
   useEffect(() => {
-    sortByCurrentMonth();
+    async function fetchSortByCurMon() {
+      await sortByCurrentMonth();
+    }
+    fetchSortByCurMon();
   }, [isSelectSort]);
   useEffect(() => {
     sortByRegDt();
@@ -818,7 +832,7 @@ function Culturals() {
   const onClickSearchReset = async () => {
     setSelectedStrDate(null);
     setSelectedEndDate(null);
-    setSelectCodeNm("전체");
+    setSelectCodeNm(" ");
     searchTitle.current.value = "";
     setStartIdx(1);
     setEndIdx(9);
