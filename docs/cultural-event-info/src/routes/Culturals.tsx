@@ -643,7 +643,6 @@ function Culturals() {
   const handlePageChange = async ({ selected }: { selected: number }) => {
     try {
       let newStartIdx = 1;
-      console.log(endIdx);
 
       if (isSelectRegSort && fetchData) {
         newStartIdx =
@@ -693,8 +692,7 @@ function Culturals() {
     setIsSelectSort((prevValue) => !prevValue);
   };
   const sortByCurrentMonth = async () => {
-    console.log(isSelectSort);
-
+    let thisMonth = "";
     if (isSelectSort) {
       const currentDate = new window.Date();
 
@@ -710,29 +708,25 @@ function Culturals() {
       );
       setSelectedStrDate(thisStrMonth);
       setSelectedEndDate(thisEndMonth);
-      const thisMonth =
-        formateDate(thisStrMonth) + "~" + formateDate(thisEndMonth);
-      try {
-        const newData = await fetchCulturalInfo(1, 9, {
-          codeNm: " ",
-          title: " ",
-          date: thisMonth,
-        });
-        console.log("this month setFetchData Running");
-
-        setFetchData(newData);
-      } catch (error) {
-        console.error("Error during search:", error);
-        return Promise.reject(error);
-      }
+      thisMonth = formateDate(thisStrMonth) + "~" + formateDate(thisEndMonth);
     } else {
       setSelectedStrDate(null);
       setSelectedEndDate(null);
+      thisMonth = " ";
+    }
+    try {
+      const newData = await fetchCulturalInfo(1, 9, {
+        codeNm: " ",
+        title: " ",
+        date: thisMonth,
+      });
+      setFetchData(newData);
+    } catch (error) {
+      console.error("Error during search:", error);
+      return Promise.reject(error);
     }
   };
   const sortByRegDt = () => {
-    console.log(selectedStrDate);
-
     handlePageChange({ selected: 0 });
   };
   // 최신순으로 정렬
