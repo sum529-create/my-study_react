@@ -570,6 +570,8 @@ function Culturals() {
   let searchTitle = useRef<HTMLInputElement>(document.createElement("input"));
   const onClickSearch = async (): Promise<ICulturalResponse> => {
     const searchTit = searchTitle.current.value;
+    const match = searchTit.match(/\[([^\]]+)\]/);
+    let schList_totalCnt = 0;
     var culturalDate = " ";
     if (selectedStrDate && selectedEndDate) {
       culturalDate =
@@ -581,9 +583,28 @@ function Culturals() {
       alert("시작날짜를 입력해주세요.");
       return Promise.reject("시작날짜를 입력해주세요.");
     }
+    if ((culturalDate || selectCodeNm || searchTit) && isSelectRegSort) {
+      try {
+        const newData = await fetchCulturalInfo(1, 9, {
+          codeNm: selectCodeNm
+            ? selectCodeNm === "전체" ||
+              selectCodeNm === "" ||
+              selectCodeNm === " "
+              ? " "
+              : selectCodeNm.split("/")[0].trim()
+            : " ",
+          title: searchTit ? (match ? match[1] : searchTit) : " ",
+          date: selectedStrDate && selectedEndDate ? culturalDate : " ",
+        });
+        schList_totalCnt = newData?.list_total_count;
+      } catch (error) {
+        console.error("Lastest searching Error", error);
+      }
+    }
     try {
-      const match = searchTit.match(/\[([^\]]+)\]/);
-      const newData = await fetchCulturalInfo(startIdx, endIdx, {
+      const lastIdx = schList_totalCnt !== 0 ? schList_totalCnt : endIdx;
+      const firstIdx = schList_totalCnt !== 0 ? lastIdx - 8 : startIdx;
+      const newData = await fetchCulturalInfo(firstIdx, lastIdx, {
         codeNm: selectCodeNm
           ? selectCodeNm === "전체" ||
             selectCodeNm === "" ||
@@ -594,7 +615,6 @@ function Culturals() {
         title: searchTit ? (match ? match[1] : searchTit) : " ",
         date: selectedStrDate && selectedEndDate ? culturalDate : " ",
       });
-      console.log("onClick setFetchData Running");
 
       setFetchData(newData);
       return newData;
@@ -662,7 +682,6 @@ function Culturals() {
         title: searchTit ? (match ? match[1] : searchTit) : " ",
         date: selectedStrDate && selectedEndDate ? culturalDate : " ",
       });
-      console.log("handle page FetchData Running");
 
       setFetchData(newData);
     } catch (error) {
