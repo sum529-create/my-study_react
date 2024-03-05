@@ -289,6 +289,12 @@ const Content = styled.div`
     }
   }
 `;
+const KakaoMap = styled.div`
+  #map {
+    width: 500px;
+    height: 400px;
+  }
+`;
 const Loading = styled.div`
   @keyframes rotate-loading {
     0% {
@@ -612,6 +618,26 @@ function Cultural() {
     } else if (data) {
       setLoading(true);
     }
+    const script = document.createElement("script");
+    script.async = true;
+    script.src =
+      "//dapi.kakao.com/v2/maps/sdk.js?appkey=ef36724c0d8e8f922928c9d3f6a45010";
+    document.head.appendChild(script);
+
+    script.onload = () => {
+      // 스크립트 로드 완료 후 지도 생성
+      const container = document.getElementById("map");
+      const options = {
+        center: new window.Kakao.maps.LatLng(33.450701, 126.570667),
+        level: 3,
+      };
+
+      const map = new window.Kakao.maps.Map(container, options);
+    };
+
+    return () => {
+      document.head.removeChild(script);
+    };
   }, []);
   const [loading, setLoading] = useState(false);
   const [showBtns, setShowBtns] = useState(false);
@@ -885,6 +911,9 @@ function Cultural() {
                     : "-"}
                 </p>
               </Content>
+              <KakaoMap>
+                <div id="map"></div>
+              </KakaoMap>
             </AboutArea>
           </Section>
         )}
