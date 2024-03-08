@@ -6,6 +6,12 @@ import Header from "../components/Header";
 import { formateDate } from "../utils/helpers";
 import { ICultural } from "../cultural";
 import { Helmet } from "react-helmet";
+import {
+  Map,
+  MapMarker,
+  MapTypeControl,
+  ZoomControl,
+} from "react-kakao-maps-sdk";
 
 const Container = styled.div`
   position: relative;
@@ -290,9 +296,23 @@ const Content = styled.div`
   }
 `;
 const KakaoMap = styled.div`
-  #map {
-    width: 500px;
-    height: 400px;
+  padding-left: 1.2rem;
+  h3 {
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 120%;
+  }
+  @media (max-width: 1024px) {
+    h3 {
+      font-size: 1.25rem;
+    }
+  }
+  @media (max-width: 740px) {
+    #__react-kakao-maps-sdk___Map {
+      width: 100% !important;
+      overflow: auto !important;
+    }
   }
 `;
 const Loading = styled.div`
@@ -571,70 +591,61 @@ function Cultural() {
   const { Kakao } = window;
   useEffect(() => {
     // Kakao SDK 초기화
-    try {
-      if (window.Kakao) {
-        // console.log("kakao execute");
-
-        if (!Kakao.isInitialized()) {
-          Kakao.init("ef36724c0d8e8f922928c9d3f6a45010");
-        }
-      }
-      if (!window.Kakao) {
-        // console.error("kakao sdk is not load");
-      }
-    } catch (error) {
-      // console.error("Error initializing Kakao SDK:", error);
-    }
-    const fetchData = async () => {
-      try {
-        const result = await fetchCulturalInfo(1, 9, {
-          codeNm:
-            subCodeNm && subCodeNm[1] ? extractCodeName(subCodeNm[1]) : "%20",
-          title: subTit && subTit[1] ? extractTitle(subTit[1]) : "%20",
-          date: subDate && subDate[1] ? subDate[1].toString() : "%20",
-        });
-
-        if (result && result.RESULT && result.RESULT.CODE === "INFO-000") {
-          const rowData = result.row;
-
-          if (rowData && rowData.length > 0) {
-            setSubData(rowData[0]);
-            setLoading(true);
-            // console.log("Data set successfully:", rowData[0]);
-          } else {
-            console.error("No data found in the result:", result);
-          }
-        } else {
-          console.error("Unexpected result structure:", result);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    if (culturalInfo && !data) {
-      // console.log("Fetching data...");
-      fetchData();
-    } else if (data) {
-      setLoading(true);
-    }
     const script = document.createElement("script");
+    script.type = "text/javascript";
     script.async = true;
-    script.src =
-      "//dapi.kakao.com/v2/maps/sdk.js?appkey=ef36724c0d8e8f922928c9d3f6a45010";
-    document.head.appendChild(script);
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_JS_KEY}&autoload=false`;
 
     script.onload = () => {
-      // 스크립트 로드 완료 후 지도 생성
-      const container = document.getElementById("map");
-      const options = {
-        center: new window.Kakao.maps.LatLng(33.450701, 126.570667),
-        level: 3,
+      try {
+        if (window.Kakao) {
+          // console.log("kakao execute");
+
+          if (!Kakao.isInitialized()) {
+            Kakao.init(process.env.REACT_APP_JS_KEY);
+          }
+        }
+        if (!window.Kakao) {
+          console.error("kakao sdk is not load");
+        }
+      } catch (error) {
+        console.error("Error initializing Kakao SDK:", error);
+      }
+      const fetchData = async () => {
+        try {
+          const result = await fetchCulturalInfo(1, 9, {
+            codeNm:
+              subCodeNm && subCodeNm[1] ? extractCodeName(subCodeNm[1]) : "%20",
+            title: subTit && subTit[1] ? extractTitle(subTit[1]) : "%20",
+            date: subDate && subDate[1] ? subDate[1].toString() : "%20",
+          });
+
+          if (result && result.RESULT && result.RESULT.CODE === "INFO-000") {
+            const rowData = result.row;
+
+            if (rowData && rowData.length > 0) {
+              setSubData(rowData[0]);
+              setLoading(true);
+              // console.log("Data set successfully:", rowData[0]);
+            } else {
+              console.error("No data found in the result:", result);
+            }
+          } else {
+            console.error("Unexpected result structure:", result);
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
       };
 
-      const map = new window.Kakao.maps.Map(container, options);
+      if (culturalInfo && !data) {
+        // console.log("Fetching data...");
+        fetchData();
+      } else if (data) {
+        setLoading(true);
+      }
     };
-
+    document.head.appendChild(script);
     return () => {
       document.head.removeChild(script);
     };
@@ -912,7 +923,70 @@ function Cultural() {
                 </p>
               </Content>
               <KakaoMap>
-                <div id="map"></div>
+                <h3>위치</h3>
+                {/* {data ? data.LOT : subData?.LOT || 37.506320759000715} */}
+                {data &&
+                (data.LOT || (subData.LOT && data.LAT) || subData.LAT) ? (
+                  <Map
+                    key={data?.LOT || subData?.LOT}
+                    center={{
+                      lat: data ? data.LOT : subData?.LOT || 37.506320759000715,
+                      lng: data ? data.LAT : subData?.LAT || 127.05368251210247,
+                    }}
+                    style={{
+                      width: "600px",
+                      height: "500px",
+                      borderRadius: "20px",
+                      margin: "0 auto",
+                    }}
+                    level={3}
+                  >
+                    <MapTypeControl position={"TOPRIGHT"} />
+                    <ZoomControl position={"RIGHT"} />
+                    <MapMarker
+                      position={{
+                        lat: data
+                          ? data.LOT
+                          : subData?.LOT || 37.506320759000715,
+                        lng: data
+                          ? data.LAT
+                          : subData?.LAT || 127.05368251210247,
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontWeight: 600,
+                          padding: "2.5px",
+                          fontSize: 14,
+                          textOverflow: "ellipsis",
+                          overflow: "hidden",
+                          width: 150,
+                          wordBreak: "keep-all",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                          background: "#FFF",
+                          border: "1px solid #b3b3b3",
+                          position: "absolute",
+                          lineHeight: 1.46,
+                          textAlign: "center",
+                          top: -22,
+                          left: -1,
+                        }}
+                      >
+                        {data
+                          ? data.PLACE
+                          : subData?.PLACE
+                          ? subData.PLACE
+                          : "-"}
+                      </div>
+                    </MapMarker>
+                  </Map>
+                ) : (
+                  <p>
+                    위치 정보가 없습니다. 해당 행사의 홈페이지를 참고해주세요.
+                  </p>
+                )}
               </KakaoMap>
             </AboutArea>
           </Section>
