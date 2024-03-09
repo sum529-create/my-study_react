@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { styled } from "styled-components";
@@ -297,23 +298,55 @@ const Content = styled.div`
 `;
 const KakaoMap = styled.div`
   padding-left: 1.2rem;
+  #__react-kakao-maps-sdk___Map button{
+    min-width:0px;
+  }
   h3 {
     margin-bottom: 2rem;
     font-size: 1.5rem;
     font-weight: bold;
     line-height: 120%;
   }
+  .map_pointer{
+    font-weight: 700;
+    padding: 8px 10px;
+    font-size: 14px;
+    width: 150px; 
+    word-break: keep-all;
+    background-color: #FFF;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 2px 4px 0px;
+    position: absolute;
+    line-height: 1.46;
+    text-align: center;
+    color: rgb(0, 104, 195);
+    bottom:-24px;
+    left: -1px;
+    letter-spacing:-1px;
+  }
+  .map_tri{
+    position:absolute;
+    left: 65px;
+    top: 22px;
+    width:0;
+    height:0;
+    border-bottom:10px solid transparent;
+    border-top:10px solid #FFF;
+    border-right:10px solid transparent;
+    border-left:10px solid transparent;
+  }
   @media (max-width: 1024px) {
     h3 {
       font-size: 1.25rem;
     }
   }
-  @media (max-width: 740px) {
+  /* @media (max-width: 740px) { */
     #__react-kakao-maps-sdk___Map {
       width: 100% !important;
       overflow: auto !important;
     }
-  }
+  /* } */
 `;
 const Loading = styled.div`
   @keyframes rotate-loading {
@@ -954,31 +987,15 @@ function Cultural() {
                       }}
                     >
                       <div
-                        style={{
-                          fontWeight: 600,
-                          padding: "2.5px",
-                          fontSize: 14,
-                          textOverflow: "ellipsis",
-                          overflow: "hidden",
-                          width: 150,
-                          wordBreak: "keep-all",
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          background: "#FFF",
-                          border: "1px solid #b3b3b3",
-                          position: "absolute",
-                          lineHeight: 1.46,
-                          textAlign: "center",
-                          top: -22,
-                          left: -1,
-                        }}
+                        className="map_pointer"
                       >
                         {data
                           ? data.PLACE
                           : subData?.PLACE
                           ? subData.PLACE
                           : "-"}
+                      </div>
+                      <div className="map_tri">
                       </div>
                     </MapMarker>
                   </Map>
