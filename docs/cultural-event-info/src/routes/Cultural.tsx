@@ -272,8 +272,8 @@ const TxtBox = styled.div`
 `;
 const Content = styled.div`
   overflow: hidden;
-  margin-top: 5rem;
-  height: 10rem;
+  margin-top: 4rem;
+  min-height: 9rem;
   padding-left: 1.2rem;
   h3 {
     margin-bottom: 2rem;
@@ -298,22 +298,20 @@ const Content = styled.div`
 `;
 const KakaoMap = styled.div`
   padding-left: 1.2rem;
-  #__react-kakao-maps-sdk___Map button{
-    min-width:0px;
-  }
+  margin-top: 4rem;
   h3 {
     margin-bottom: 2rem;
     font-size: 1.5rem;
     font-weight: bold;
     line-height: 120%;
   }
-  .map_pointer{
+  .map_pointer {
     font-weight: 700;
     padding: 8px 10px;
     font-size: 14px;
-    width: 150px; 
+    width: 150px;
     word-break: keep-all;
-    background-color: #FFF;
+    background-color: #fff;
     border: 1px solid rgba(0, 0, 0, 0.05);
     border-radius: 4px;
     box-shadow: rgba(0, 0, 0, 0.12) 0px 2px 4px 0px;
@@ -321,32 +319,33 @@ const KakaoMap = styled.div`
     line-height: 1.46;
     text-align: center;
     color: rgb(0, 104, 195);
-    bottom:-24px;
+    bottom: -24px;
     left: -1px;
-    letter-spacing:-1px;
+    letter-spacing: -1px;
   }
-  .map_tri{
-    position:absolute;
+  .map_tri {
+    position: absolute;
     left: 65px;
     top: 22px;
-    width:0;
-    height:0;
-    border-bottom:10px solid transparent;
-    border-top:10px solid #FFF;
-    border-right:10px solid transparent;
-    border-left:10px solid transparent;
+    width: 0;
+    height: 0;
+    border-bottom: 10px solid transparent;
+    border-top: 10px solid #fff;
+    border-right: 10px solid transparent;
+    border-left: 10px solid transparent;
+  }
+  #__react-kakao-maps-sdk___Map {
+    width: 100% !important;
+    overflow: auto !important;
+    button {
+      min-width: 0px;
+    }
   }
   @media (max-width: 1024px) {
     h3 {
       font-size: 1.25rem;
     }
   }
-  /* @media (max-width: 740px) { */
-    #__react-kakao-maps-sdk___Map {
-      width: 100% !important;
-      overflow: auto !important;
-    }
-  /* } */
 `;
 const Loading = styled.div`
   @keyframes rotate-loading {
@@ -622,6 +621,8 @@ function Cultural() {
   const data = location.state?.data || null;
   const [subData, setSubData] = useState<ICultural>(data);
   const { Kakao } = window;
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [mapKey, setMapKey] = useState(Math.random());
   useEffect(() => {
     // Kakao SDK 초기화
     const script = document.createElement("script");
@@ -681,6 +682,17 @@ function Cultural() {
     document.head.appendChild(script);
     return () => {
       document.head.removeChild(script);
+    };
+  }, []);
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+      setMapKey(Math.random());
+    };
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
   const [loading, setLoading] = useState(false);
@@ -938,9 +950,9 @@ function Cultural() {
               <Content>
                 <h3>공연정보</h3>
                 <p>
-                  {data
+                  {data && data.PROGRAM !== ""
                     ? data.PROGRAM
-                    : subData?.PROGRAM
+                    : subData && subData.PROGRAM !== ""
                     ? subData.PROGRAM
                     : "공연정보가 없습니다."}
                 </p>
@@ -948,9 +960,9 @@ function Cultural() {
               <Content>
                 <h3>기타</h3>
                 <p>
-                  {data
+                  {data && data.ETC_DESC !== ""
                     ? data.ETC_DESC
-                    : subData?.ETC_DESC
+                    : subData && subData.ETC_DESC !== ""
                     ? subData.ETC_DESC
                     : "-"}
                 </p>
@@ -961,13 +973,13 @@ function Cultural() {
                 {data &&
                 (data.LOT || (subData.LOT && data.LAT) || subData.LAT) ? (
                   <Map
-                    key={data?.LOT || subData?.LOT}
+                    // key={data?.LOT || subData?.LOT}
+                    key={mapKey}
                     center={{
                       lat: data ? data.LOT : subData?.LOT || 37.506320759000715,
                       lng: data ? data.LAT : subData?.LAT || 127.05368251210247,
                     }}
                     style={{
-                      width: "600px",
                       height: "500px",
                       borderRadius: "20px",
                       margin: "0 auto",
@@ -986,17 +998,14 @@ function Cultural() {
                           : subData?.LAT || 127.05368251210247,
                       }}
                     >
-                      <div
-                        className="map_pointer"
-                      >
+                      <div className="map_pointer">
                         {data
                           ? data.PLACE
                           : subData?.PLACE
                           ? subData.PLACE
                           : "-"}
                       </div>
-                      <div className="map_tri">
-                      </div>
+                      <div className="map_tri"></div>
                     </MapMarker>
                   </Map>
                 ) : (
