@@ -653,6 +653,7 @@ function Culturals() {
 
   const handlePageChange = async ({ selected }: { selected: number }) => {
     try {
+      window.scrollTo(0, 300);
       let newStartIdx = 1;
 
       if (isSelectRegSort && fetchData) {
@@ -866,13 +867,13 @@ function Culturals() {
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     e.preventDefault();
-    if (currentPage - 10 < 0) {
-      setCurrentPage(0);
-      handlePageChange({ selected: 0 });
-    } else {
-      setCurrentPage((prevPage) => Math.max(0, prevPage - 10));
-      handlePageChange({ selected: currentPage - 10 });
-    }
+    // if (currentPage - 10 < 0) {
+    setCurrentPage(0);
+    handlePageChange({ selected: 0 });
+    // } else {
+    //   setCurrentPage((prevPage) => Math.max(0, prevPage - 10));
+    //   handlePageChange({ selected: currentPage - 10 });
+    // }
   };
   const goToNextPage = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault();
@@ -880,13 +881,13 @@ function Culturals() {
     if (data || fetchData)
       maxPgNum = Math.ceil((fetchData?.list_total_count ?? 0) / 9);
 
-    if (currentPage + 10 > maxPgNum) {
-      setCurrentPage(maxPgNum - 1);
-      handlePageChange({ selected: maxPgNum - 1 });
-    } else {
-      setCurrentPage((prePage) => Math.min(maxPgNum, prePage + 10));
-      handlePageChange({ selected: currentPage + 10 });
-    }
+    // if (currentPage + 10 > maxPgNum) {
+    setCurrentPage(maxPgNum - 1);
+    handlePageChange({ selected: maxPgNum - 1 });
+    // } else {
+    //   setCurrentPage((prePage) => Math.min(maxPgNum, prePage + 10));
+    //   handlePageChange({ selected: currentPage + 10 });
+    // }
   };
   const handleStrDateChange = (date: Date) => {
     setSelectedStrDate(date);
@@ -1032,9 +1033,9 @@ function Culturals() {
                 <ReactPaginate
                   previousLabel={"<"}
                   nextLabel={">"}
-                  breakLabel={"..."}
+                  breakLabel={""}
                   pageCount={Math.ceil((fetchData?.list_total_count ?? 0) / 9)} // 전체 페이지 수
-                  marginPagesDisplayed={1}
+                  marginPagesDisplayed={0}
                   pageRangeDisplayed={9}
                   onPageChange={handlePageChange}
                   containerClassName={"pagination"}
