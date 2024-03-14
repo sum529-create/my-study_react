@@ -2,7 +2,8 @@ import axios from "axios";
 
 // 프록시 서버 주소로 수정
 // const BASE_URL = "http://127.0.0.1:8080/proxy";
-const BASE_URL = "https://4d2f-211-207-166-10.ngrok-free.app/proxy";
+const BASE_URL =
+  "https://2261-2001-2d8-2084-2af2-28f8-42ea-f3d-f470.ngrok-free.app/proxy";
 
 export const fetchCulturalInfo = async (
   startIdx: number,

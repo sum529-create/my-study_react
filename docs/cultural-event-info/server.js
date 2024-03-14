@@ -15,7 +15,7 @@ app.get(
   async (req, res) => {
     const { startIdx, endIdx, codeNm, title, date } = req.params;
     try {
-      let url = `http://openapi.seoul.go.kr:8088/4d48766c7573756d31303757415a7157/json/culturalEventInfo/${startIdx}/${endIdx}/`;
+      let url = `http://openapi.seoul.go.kr:8088/6a656f5a4b73756d37324842427267/json/culturalEventInfo/${startIdx}/${endIdx}/`;
       if (codeNm) url += `${codeNm}/`;
       if (title) url += `${title}/`;
       if (date) url += `${date}/`;

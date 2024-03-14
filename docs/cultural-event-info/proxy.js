@@ -20,7 +20,7 @@ app.use((req, res, next) => {
 // 프록시 미들웨어 설정
 const proxyOptions = {
   target:
-    "http://openapi.seoul.go.kr:8088/4d48766c7573756d31303757415a7157/json/culturalEventInfo",
+    "http://openapi.seoul.go.kr:8088/6a656f5a4b73756d37324842427267/json/culturalEventInfo",
   changeOrigin: true,
   pathRewrite: {
     "^/proxy/api/cultural-event-info": "",
