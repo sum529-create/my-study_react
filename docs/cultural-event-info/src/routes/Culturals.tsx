@@ -1,3 +1,4 @@
+import React from "react";
 import { styled } from "styled-components";
 import { useQuery } from "react-query";
 import { fetchCulturalInfo } from "../api";
