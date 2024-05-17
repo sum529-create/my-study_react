@@ -1,9 +1,6 @@
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 
-// 프록시 서버 주소로 수정
-// const BASE_URL = "http://127.0.0.1:8080/proxy";
-const BASE_URL =
-  "https://2261-2001-2d8-2084-2af2-28f8-42ea-f3d-f470.ngrok-free.app/proxy";
+const BASE_URL = "http://localhost:3004";
 
 export const fetchCulturalInfo = async (
   startIdx: number,
@@ -22,7 +19,7 @@ export const fetchCulturalInfo = async (
   if (date) url += `${date}/`;
 
   try {
-    const response = await axios.get(url, {
+    const response = await axiosInstance.get(url, {
       // 여기에 헤더를 추가합니다.
       headers: {
         withCredentials: true,
